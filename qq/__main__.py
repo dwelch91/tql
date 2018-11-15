@@ -21,7 +21,7 @@ DEBUG = False
 
 def debug(s):
     if DEBUG:
-        print(s)
+        sys.stderr.write(f"{s}\n")
 
 # TODO: Refactor!
 
@@ -31,7 +31,7 @@ def main(args=None):
     if args is None:
         args = sys.argv[1:]
     parser = argparse.ArgumentParser()
-    parser.add_argument('sql', nargs=1)
+    parser.add_argument('sql', nargs='*')
     parser.add_argument('--dialect', '-t', choices=csv.list_dialects(), default='unix',
                         help=f"Specify the CSV dialect. Valid values are {', '.join(csv.list_dialects())}.")
     parser.add_argument('--delimiter', '-d', default=',', help="Specify the CSV delimiter to use. Default is a comma (,).")
@@ -51,7 +51,9 @@ def main(args=None):
                         help="Specify a column filter. Use one filter per switch/param. "
                              "Format is <column_name>|filter|<0 or more params or additional filters>.  "
                              "Filters have a variable number of parameters. Filters may be chained.")
+    parser.add_argument('--filter-list', action='store_true')
 
+    # TODO: Subparsers? qq select ... qq insert ... qq delete ... qq filter-list ... etc.
     # TODO: Handle more CSV parser params
     # TODO: Handle column names (either spec'd with -r or auto-gen'd) that are SQL reserved words... prefix or suffix them? or, have user re-map them?
     # TODO: Handle filenames that don't translate into valid table names
@@ -64,6 +66,11 @@ def main(args=None):
     args = parser.parse_args(args=args)
     DEBUG = args.debug
     debug(args)
+
+    if args.filter_list:
+        for f, n, doc in FILTERS.values():
+            print(doc)
+        return 0
 
     tables, rewrite, i = {}, [], 0
     for sql in args.sql:
@@ -153,7 +160,7 @@ def main(args=None):
                                     print(f"Error: Invalid filter name: {filter_name}")
                                     return 1
 
-                                func, num_params = FILTERS[filter_name]
+                                func, num_params, _ = FILTERS[filter_name]
                                 func_args = [params.pop(0) for _ in range(num_params)]
                                 data = func(data, *func_args)
 

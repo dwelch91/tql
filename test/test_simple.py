@@ -10,7 +10,7 @@ class TestSimple(TestCase):
 
 
     def test_skip_lines(self):
-        main(args=["SELECT * FROM './ls.txt' WHERE size > 500 ORDER BY size;",
+        main(args=["SELECT perms, SUM(size) FROM './ls.txt' WHERE size > 500 GROUP BY perms;",
                    '-k', '1',  # skip 1 line
                    '-r', 'perms, links, owner, grp, size, month, day, time, filename',
                    '-d', ' ',  # space delimited
@@ -37,3 +37,7 @@ class TestSimple(TestCase):
 
     def test_help(self):
         main(args=['--help'])
+
+
+    def test_filter_list(self):
+        main(args=['--filter-list'])
