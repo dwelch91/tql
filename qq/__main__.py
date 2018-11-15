@@ -1,21 +1,15 @@
-import argparse
-import os
 import sys
+import argparse
 import csv
 import sqlite3
-import re
 
-from qq.filters import FILTERS
+from prettytable import PrettyTable
+
+from qq.exceptions import Error, FilterError
+from qq.filters import FILTERS, print_filter_list_table, preprocess_filters
+from qq.sql import rewrite_sql, process_table_remapping, process_column_remapping
 from qq.utils import error
 
-try:
-    import prettytable
-
-    HAVE_PRETTY_TABLE = True
-except ImportError:
-    HAVE_PRETTY_TABLE = False
-
-FROM_PATTERN = re.compile("""FROM (?=(?:(?<![a-z0-9/.~-])'([a-z0-9/.~-].*?)'(?![a-z0-9/.~-])|\"([a-z0-9/.~-].*?)\"(?![a-z0-9/~-])))""", re.I)
 DEBUG = False
 
 
@@ -23,17 +17,17 @@ def debug(s):
     if DEBUG:
         sys.stderr.write(f"{s}\n")
 
-# TODO: Refactor!
-
 
 def main(args=None):
     global DEBUG
     if args is None:
         args = sys.argv[1:]
     parser = argparse.ArgumentParser()
-    parser.add_argument('sql', nargs='*')
+    parser.add_argument('sql', nargs='*', help="The SQL to execute. "
+                                               "Use filenames surrounded by single or double quotes to specify CSV sources instead of existing tables in the FROM clause(s). "
+                                               "You can use [:...:] replacements for special characters (see --help-filters for more information.")
     parser.add_argument('--dialect', '-t', choices=csv.list_dialects(), default='unix',
-                        help=f"Specify the CSV dialect. Valid values are {', '.join(csv.list_dialects())}.")
+                        help=f"Specify the CSV dialect. Valid values are {', '.join(csv.list_dialects())}. Default is `unix`.")
     parser.add_argument('--delimiter', '-d', default=',', help="Specify the CSV delimiter to use. Default is a comma (,).")
     parser.add_argument('--quotechar', '--quote-char', '-q', default='"', help='Specify the CSV quote charactor. Default is double quote (").')
     parser.add_argument('--output', '-o', default='-', help="Output file. Default is stdout (-).")
@@ -49,48 +43,52 @@ def main(args=None):
     parser.add_argument('--debug', '-g', action='store_true', help="Turn on debug output.")
     parser.add_argument('--filter', '-e', action='append',
                         help="Specify a column filter. Use one filter per switch/param. "
-                             "Format is <column_name>|filter|<0 or more params or additional filters>.  "
-                             "Filters have a variable number of parameters. Filters may be chained.")
-    parser.add_argument('--filter-list', action='store_true')
+                             "Format is <column_name>|filter|<0 or more params or additional filters in filter chain>.  "
+                             "Filters have a variable number of parameters (0+). Filters may be chained.")
+    #parser.add_argument('--auto-filter', '-a', action='store_true', help="Automatically apply the `num` filter to all column data.")
+    parser.add_argument('--filter-list', '--help-filters', action='store_true')
+    parser.add_argument('--remap-column', '--remap-header', '-m', action='append',
+                        help="A single column re-map in the form <col_name>=<new_col_name>. Use one switch for each column re-mapping. "
+                             "This overrides any column/header names that are auto-discovered or passed in via --headers/-r. "
+                             "You can use [:...:] replacements for special characters (see --help-filters for more information.")
+    parser.add_argument('--remap-table', '--remap-file', '-l', action='append',
+                        help="A single table re-map in the form <table_name>=<new_table_name>. Use one switch for each table re-mapping. "
+                             "This overrides any table names that are auto-generated from filenames passed in via the SQL statement. "
+                             "You can use [:...:] replacements for special characters (see --help-filters for more information.")
 
-    # TODO: Subparsers? qq select ... qq insert ... qq delete ... qq filter-list ... etc.
+    # TODO: Subparsers? qq query ... qq insert ... qq delete ... qq filter-list ... etc.  Can a subparser be default? (problematic with SQL positional param)
     # TODO: Handle more CSV parser params
-    # TODO: Handle column names (either spec'd with -r or auto-gen'd) that are SQL reserved words... prefix or suffix them? or, have user re-map them?
-    # TODO: Handle filenames that don't translate into valid table names
-    # TODO: Handle duplicate column names
-    # TODO: Allow for column name re-mapping (when doing auto-headers, not -r)
-    # TODO: Allow for table name re-mapping (override default table name using basename of CSV/TSV file)
+    # TODO: Handle duplicate column names (in -r)
     # TODO: Modification queries? (read CSV, apply filters, save to db, apply SQL modification(s), output new CSV)
-    # TODO: Show available filters command
+    # TODO: Auto filtering to number with a switch? (only for columns w/o an explicit filter with -e)
 
     args = parser.parse_args(args=args)
     DEBUG = args.debug
     debug(args)
 
     if args.filter_list:
-        for f, n, doc in FILTERS.values():
-            print(doc)
+        print_filter_list_table()
         return 0
 
-    tables, rewrite, i = {}, [], 0
-    for sql in args.sql:
-        for m in FROM_PATTERN.finditer(sql):
-            path = m.group(1)
-            # TODO: Handle stdin ('-')
-            path = os.path.expanduser(path) if '~' in path else path
-            if not os.path.exists(path):
-                error(f"File not found: {path}")
-                return 2
-            rewrite.append(sql[i:m.start(1) - 1])
-            i = m.end(1) + 1
-            filename = os.path.basename(path)
-            tablename = os.path.splitext(filename)[0]
-            rewrite.append(tablename)
-            tables[tablename] = path
+    if not args.sql:
+        raise Error("You must specify the SQL to execute.")
 
-        rewrite.append(sql[i:])
+    # Process table re-mappings, if any
+    table_remapping = process_table_remapping(args.remap_table)
+    debug(table_remapping)
 
-    new_sql = ''.join(rewrite)
+    # Re-write the SQL, replacing filenames with table names and apply table re-mapping(s)
+    sql, tables = rewrite_sql(args.sql, table_remapping)
+    debug(sql)
+    debug(tables)
+
+    # Pre-process the filters
+    filters = preprocess_filters(args.filter)
+    debug(filters)
+
+    # Process the column re-mappings, if any
+    column_remapping = process_column_remapping(args.remap_column)
+    debug(column_remapping)
 
     # TODO: Allow for database "re-use" - open an existing database file and use other tables in it for JOINs, etc along with the CSV input table(s)
     # TODO: --load-db <database name>
@@ -98,34 +96,15 @@ def main(args=None):
     if args.save_db:
         con = sqlite3.connect(args.save_db)
     else:
-        con = sqlite3.connect(":memory:")
+        con = sqlite3.connect(":memory:")  # TODO: will be used if -l or -s not specified
 
     cur = con.cursor()
-
-    # Pre-process the filters
-    filters = {}
-    if args.filter:
-        debug(args.filter)
-        for filter_combo in args.filter:
-            parts = filter_combo.split('|')
-            if len(parts) < 2:
-                error(f"Invalid filter combo: {filter_combo}")
-                return 1
-            col = parts[0]
-            params = parts[1:]
-            if col in filters:
-                error(f"Multiple filters for column: {col}")
-                return 1
-            filters[col] = params
-
-    debug(filters)
 
     # Read each CSV or TSV file and insert into a SQLite table based on the filename of the file
     for tablename, path in tables.items():
         with open(path) as f:
             if args.skip_lines:
-                for _ in range(args.skip_lines):
-                    f.readline()
+                [f.readline() for _ in range(args.skip_lines)]
 
             reader = csv.reader(f, dialect=args.dialect, delimiter=args.delimiter, quotechar=args.quotechar)
             first, colnames = True, []
@@ -135,12 +114,9 @@ def main(args=None):
 
                 if first:
                     placeholders = ', '.join(['?'] * len(row))
-                    if args.headers:
-                        colnames = [n.strip() for n in args.headers.split(',')]
-                        colnames_str = ','.join(colnames)
-                    else:
-                        colnames = [n.strip() for n in row]
-                        colnames_str = ', '.join(colnames)
+                    col_src = args.headers.split(',') if args.headers else row
+                    colnames = [column_remapping.get(n.strip()) or n.strip() for n in col_src]
+                    colnames_str = ','.join(colnames)
 
                     s = f"CREATE TABLE {tablename} ({colnames_str});"
                     debug(s)
@@ -148,7 +124,8 @@ def main(args=None):
                     first = False
                     continue
 
-                # Process the filters
+                # Process data based on filter chains
+                # TODO: Move this section to filters.py
                 new_row = []
                 if filters:
                     for col, data in zip(colnames, row):
@@ -157,10 +134,9 @@ def main(args=None):
                             while params:
                                 filter_name = params.pop(0)
                                 if filter_name not in FILTERS:
-                                    print(f"Error: Invalid filter name: {filter_name}")
-                                    return 1
+                                    raise FilterError(f"Error: Invalid filter name: {filter_name}")
 
-                                func, num_params, _ = FILTERS[filter_name]
+                                func, num_params = FILTERS[filter_name][:2]
                                 func_args = [params.pop(0) for _ in range(num_params)]
                                 data = func(data, *func_args)
 
@@ -177,21 +153,18 @@ def main(args=None):
 
     con.commit()
 
-    debug(new_sql)
-    result = cur.execute(new_sql)
+    # TODO: Move to output.py
+    debug(sql)
+    result = cur.execute(sql)
     column_names = [x[0] for x in cur.description]
 
     if args.output == '-':
         if args.output_format == 'table':
-            if HAVE_PRETTY_TABLE:
-                table = prettytable.PrettyTable(column_names)
-                table.align = 'l'
-                for row in result:
-                    table.add_row(row)
-                print(table)
-            else:
-                error("Install prettytable for table output support.")
-                return 1
+            table = PrettyTable(column_names)
+            table.align = 'l'
+            for row in result:
+                table.add_row(row)
+            print(table)
 
         elif args.output_format == 'csv':
             writer = csv.writer(sys.stdout, delimiter=args.delimiter)
@@ -205,7 +178,12 @@ def main(args=None):
                 writer.writerow(row)
 
     con.close()
+    return 0
 
 
 if __name__ == '__main__':
-    sys.exit(main())
+    try:
+        sys.exit(main())
+    except Error as e:
+        error(e)
+        sys.exit(1)  # TODO: correct result code

@@ -1,7 +1,6 @@
 import re
 import sys
 
-
 POWERS_10 = {0: "", 3: "K", 6: "M", 9: "G", 12: "T", 15: "P", 18: "E"}
 POWERS_2 = {0: "", 10: "K", 20: "M", 30: "G", 40: "T", 50: "P", 60: "E"}
 INV_POWERS_10 = {"": 0, "K": 3, "M": 6, "G": 9, "T": 12, "P": 15, "E": 18}
@@ -100,3 +99,5 @@ def to_float(n):
 
 def error(s):
     sys.stderr.write(f"Error: {s}\n")
+
+
