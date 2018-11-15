@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from main import main
+from qq.__main__ import main
 
 
 class TestSimple(TestCase):

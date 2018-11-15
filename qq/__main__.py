@@ -24,7 +24,9 @@ def to_num(n):
             return n
 
 
-def main():
+def main(args=None):
+    if args is None:
+        args = sys.args[1:]
     parser = argparse.ArgumentParser()
     parser.add_argument('sql', nargs=1)
     parser.add_argument('--dialect', '-t', choices=csv.list_dialects(), default='unix')
@@ -35,13 +37,16 @@ def main():
     parser.add_argument('--output', '-o', default='-')
     parser.add_argument('--output-format', '--out-format', '--out-fmt', '-f', default='table', choices=['table', 'csv'])
     parser.add_argument('--save-db', '-s')
+    parser.add_argument('--load-db', '-l')
+    # TODO: Handle CSV files w/o headers - need header/no-header switch and auto column naming if no header
 
-    args = parser.parse_args()
+    args = parser.parse_args(args=args)
 
     tables, rewrite, i = {}, [], 0
     for sql in args.sql:
         for m in FROM_PATTERN.finditer(sql):
             path = m.group(1)
+            # TODO: Handle stdin ('-')
             path = os.path.expanduser(path) if '~' in path else path
             if not os.path.exists(path):
                 print(f"File not found: {path}")
@@ -57,6 +62,9 @@ def main():
 
     new_sql = ''.join(rewrite)
 
+    # TODO: Allow for database "re-use" - open an existing database file and use other tables in it for JOINs, etc along with the CSV input table(s)
+    # TODO: --load-db <database name>
+    # TODO: Have to handle case where db has an existing table with same name as one of the CSV input table(s)
     if args.save_db:
         con = sqlite3.connect(args.save_db)
     else:
@@ -89,10 +97,14 @@ def main():
 
     if args.output == '-':
         if args.output_format == 'table':
-            table = prettytable.PrettyTable(column_names)
-            for row in result:
-                table.add_row(row)
-            print(table)
+            if HAVE_PRETTY_TABLE:
+                table = prettytable.PrettyTable(column_names)
+                for row in result:
+                    table.add_row(row)
+                print(table)
+            else:
+                print("Error: Install prettytable for table output support.")
+                return 1
 
         elif args.output_format == 'csv':
             writer = csv.writer(sys.stdout, delimiter=args.delimiter)
