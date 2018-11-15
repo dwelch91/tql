@@ -105,3 +105,30 @@ def print_filter_list_table():
     print("""** To represent special characters in filters, you can use these replacement sequences:""")
     print_replacements_table()
 
+
+def apply_filters(filters, colnames, row):
+    """
+    Process data based on filter chains
+    :param filters:
+    :param colnames:
+    :param row:
+    :return:
+    """
+    if filters:
+        new_row = []
+        for col, data in zip(colnames, row):
+            if col in filters:
+                params = filters[col][:]
+                while params:
+                    filter_name = params.pop(0)
+                    if filter_name not in FILTERS:
+                        raise FilterError(f"Error: Invalid filter name: {filter_name}")
+
+                    func, num_params = FILTERS[filter_name][:2]
+                    func_args = [params.pop(0) for _ in range(num_params)]
+                    data = func(data, *func_args)
+
+            new_row.append(data)
+        return new_row
+
+    return row

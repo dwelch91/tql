@@ -3,10 +3,9 @@ import argparse
 import csv
 import sqlite3
 
-from prettytable import PrettyTable
-
-from qq.exceptions import Error, FilterError
-from qq.filters import FILTERS, print_filter_list_table, preprocess_filters
+from qq.exceptions import Error
+from qq.filters import print_filter_list_table, preprocess_filters, apply_filters
+from qq.output import do_output
 from qq.sql import rewrite_sql, process_table_remapping, process_column_remapping
 from qq.utils import error
 
@@ -61,6 +60,9 @@ def main(args=None):
     # TODO: Handle duplicate column names (in -r)
     # TODO: Modification queries? (read CSV, apply filters, save to db, apply SQL modification(s), output new CSV)
     # TODO: Auto filtering to number with a switch? (only for columns w/o an explicit filter with -e)
+    # IDEA: Load from markdown table?
+    # IDEA: Load from URL? Save CSV to URL?
+    # REVISIT: Maybe use a diff. character after the filter name and/or between params? c1|replace:foo,bar|lower|...
 
     args = parser.parse_args(args=args)
     DEBUG = args.debug
@@ -124,59 +126,15 @@ def main(args=None):
                     first = False
                     continue
 
-                # Process data based on filter chains
-                # TODO: Move this section to filters.py
-                new_row = []
-                if filters:
-                    for col, data in zip(colnames, row):
-                        if col in filters:
-                            params = filters[col][:]
-                            while params:
-                                filter_name = params.pop(0)
-                                if filter_name not in FILTERS:
-                                    raise FilterError(f"Error: Invalid filter name: {filter_name}")
-
-                                func, num_params = FILTERS[filter_name][:2]
-                                func_args = [params.pop(0) for _ in range(num_params)]
-                                data = func(data, *func_args)
-
-                        new_row.append(data)
-
-                    debug(new_row)
-                    s = f"INSERT INTO {tablename} ({colnames_str}) VALUES ({placeholders});"
-                    cur.execute(s, new_row)
-
-                else:
-                    debug(row)
-                    s = f"INSERT INTO {tablename} ({colnames_str}) VALUES ({placeholders});"
-                    cur.execute(s, row)
+                filtered_row = apply_filters(filters, colnames, row)
+                debug(row)
+                s = f"INSERT INTO {tablename} ({colnames_str}) VALUES ({placeholders});"
+                cur.execute(s, filtered_row)
 
     con.commit()
 
-    # TODO: Move to output.py
     debug(sql)
-    result = cur.execute(sql)
-    column_names = [x[0] for x in cur.description]
-
-    if args.output == '-':
-        if args.output_format == 'table':
-            table = PrettyTable(column_names)
-            table.align = 'l'
-            for row in result:
-                table.add_row(row)
-            print(table)
-
-        elif args.output_format == 'csv':
-            writer = csv.writer(sys.stdout, delimiter=args.delimiter)
-            writer.writerow(column_names)
-            for row in result:
-                writer.writerow(row)
-    else:
-        with open(args.output, 'w', newline='') as f:
-            writer = csv.writer(f, delimiter=args.delimiter)
-            for row in result:
-                writer.writerow(row)
-
+    do_output(sql, cur, args.output, args.output_format, args.delimiter)
     con.close()
     return 0
 
