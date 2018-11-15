@@ -10,6 +10,7 @@ from qq.utils import to_num, to_int, to_float, humanize, dehumanize, ordinal
 # TODO: Split columns
 # TODO: Date/time/datetime filters?
 # TODO: Regex filter?
+# TODO: Locale formatting
 
 
 FILTERS = {

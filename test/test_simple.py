@@ -34,3 +34,6 @@ class TestSimple(TestCase):
                    '-e', 'start_timestamp|datetime|tz|America/Los_Angeles|iso8601',
                    '-e', 'a_volts_avg|float|format|0>15f'
                    ])
+
+    def test_help(self):
+        main(args=['--help'])

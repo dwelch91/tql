@@ -32,21 +32,34 @@ def main(args=None):
         args = sys.argv[1:]
     parser = argparse.ArgumentParser()
     parser.add_argument('sql', nargs=1)
-    parser.add_argument('--dialect', '-t', choices=csv.list_dialects(), default='unix')
-    parser.add_argument('--delimiter', '-d', default=',')
-    parser.add_argument('--quotechar', '--quote-char', '-q', default='"')
-    parser.add_argument('--output', '-o', default='-')
-    parser.add_argument('--output-format', '--out-format', '--out-fmt', '-f', default='table', choices=['table', 'csv'])
-    parser.add_argument('--save-db', '-s')
-    parser.add_argument('--load-db', '-l')
-    parser.add_argument('--skip-lines', '--skip', '-k', type=int, default=0)
-    parser.add_argument('--headers', '-r')  # Comma sep list of column names
-    parser.add_argument('--debug', '-g', action='store_true')
-    parser.add_argument('--filter', '-e', action='append')  # column|filter|... chain, 1 per switch
+    parser.add_argument('--dialect', '-t', choices=csv.list_dialects(), default='unix',
+                        help=f"Specify the CSV dialect. Valid values are {', '.join(csv.list_dialects())}.")
+    parser.add_argument('--delimiter', '-d', default=',', help="Specify the CSV delimiter to use. Default is a comma (,).")
+    parser.add_argument('--quotechar', '--quote-char', '-q', default='"', help='Specify the CSV quote charactor. Default is double quote (").')
+    parser.add_argument('--output', '-o', default='-', help="Output file. Default is stdout (-).")
+    parser.add_argument('--output-format', '--out-format', '--out-fmt', '-f', default='table', choices=['table', 'csv'],
+                        help="Output format. Valid value are 'table' and 'csv'. Default is table.")
+    parser.add_argument('--save-db', '-s', help="Specify a SQLite database to use (instead of using an in-memory database. The database will remain after qq exits.")
+    #parser.add_argument('--load-db', '-l', help="Load an existing database instead of creating a new one.")
+    parser.add_argument('--skip-lines', '--skip', '-k', type=int, default=0, help="Skip `SKIP_LINES` lines at the beginning of the file. Default is 0.")
+    parser.add_argument('--headers', '-r',
+                        help="Don't use the first non-skipped line for header/column names, use these header/column names instead. "
+                             "Format is a comma separated list of column names. "
+                             "Column names must not be SQLite reserved words.")
+    parser.add_argument('--debug', '-g', action='store_true', help="Turn on debug output.")
+    parser.add_argument('--filter', '-e', action='append',
+                        help="Specify a column filter. Use one filter per switch/param. "
+                             "Format is <column_name>|filter|<0 or more params or additional filters>.  "
+                             "Filters have a variable number of parameters. Filters may be chained.")
 
     # TODO: Handle more CSV parser params
-    # TODO: Handle column names (either spec'd with -r or auto-gen'd) that are SQL reserved words... prefix or suffix them?
+    # TODO: Handle column names (either spec'd with -r or auto-gen'd) that are SQL reserved words... prefix or suffix them? or, have user re-map them?
     # TODO: Handle filenames that don't translate into valid table names
+    # TODO: Handle duplicate column names
+    # TODO: Allow for column name re-mapping (when doing auto-headers, not -r)
+    # TODO: Allow for table name re-mapping (override default table name using basename of CSV/TSV file)
+    # TODO: Modification queries? (read CSV, apply filters, save to db, apply SQL modification(s), output new CSV)
+    # TODO: Show available filters command
 
     args = parser.parse_args(args=args)
     DEBUG = args.debug
