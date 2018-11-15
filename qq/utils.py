@@ -73,13 +73,15 @@ def ordinal(n):
 
 
 def to_num(n):
-    try:
-        return int(n)
-    except ValueError:
+    if isinstance(n, str):
         try:
-            return float(n)
+            return int(n)
         except ValueError:
-            return n
+            try:
+                return float(n)
+            except ValueError:
+                pass
+    return n
 
 
 def to_int(n):

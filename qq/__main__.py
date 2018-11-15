@@ -122,7 +122,7 @@ def main(args=None):
                         colnames = [n.strip() for n in row]
                         colnames_str = ', '.join(colnames)
 
-                    s = f"CREATE TABLE {tablename} ({colnames_str})"
+                    s = f"CREATE TABLE {tablename} ({colnames_str});"
                     debug(s)
                     cur.execute(s)
                     first = False

@@ -19,6 +19,7 @@ FILTERS = {
     'int': (to_int, 0),
     'integer': (to_int, 0),
     'float': (to_float, 0),
+    'str': (lambda s: str(s), 0),
 
     # Human
     'humanize': (lambda s, u: humanize(to_num(s), u, show_value=False), 1),  # param: unit
@@ -26,7 +27,6 @@ FILTERS = {
     'ordinal': (lambda s: ordinal(to_int(s)), 0),
 
     # String manipulation
-    'str': (lambda s: str(s), 0),
     'lower': (lambda s: s.lower(), 0),
     'upper': (lambda s: s.upper(), 0),
     'capitalize': (lambda s: s.capitalize(), 0),
@@ -46,16 +46,16 @@ FILTERS = {
     # Data formatting
     'format': (lambda x, fmt: format(x, fmt), 1),  # param: format
 
-    # (Simple) maths
+    # (Simple) maths (intermediate values are numbers and inputs are auto converted to numbers)
     'add': (lambda s, o: to_num(s) + to_num(o), 1),  # param: value to add
     'sub': (lambda s, o: to_num(s) - to_num(o), 1),  # param: value to sub
     'mult': (lambda s, o: to_num(s) * to_num(o), 1),  # param: value to multiply
     'div': (lambda s, o: to_num(s) / to_num(o), 1),  # param: value to divide
-    'abs': (lambda x: abs(x), 1),
-    'round': (lambda x, d: round(x, to_int(d)), 1),  # param: num digits
-    'ceil': (lambda x: ceil(x), 0),
-    'floor': (lambda x: floor(x), 0),
-    'trunc': (lambda x: trunc(x), 0),
+    'abs': (lambda x: abs(to_num(x)), 1),
+    'round': (lambda x, d: round(to_num(x), to_int(d)), 1),  # param: num digits
+    'ceil': (lambda x: ceil(to_num(x)), 0),
+    'floor': (lambda x: floor(to_num(x)), 0),
+    'trunc': (lambda x: trunc(to_num(x)), 0),
 
     # Datetime filters (intermediate values are pendulum datetimes)
     'datetime': (lambda s: pendulum.parse(s), 0),
