@@ -1,0 +1,17 @@
+total 64
+drwxr-xr-x  16 dwelch  staff   544B Nov 14 19:06 .
+drwxr-xr-x  25 dwelch  staff   850B Nov 14 17:31 ..
+-rw-r--r--@  1 dwelch  staff   8.0K Nov 14 17:35 .DS_Store
+drwxr-xr-x  16 dwelch  staff   544B Nov 14 19:10 .git
+-rw-r--r--   1 dwelch  staff   1.2K Nov 14 17:31 .gitignore
+drwxr-xr-x  11 dwelch  staff   374B Nov 14 19:05 .idea
+-rw-r--r--   1 dwelch  staff   1.0K Nov 14 17:31 LICENSE
+-rw-r--r--   1 dwelch  staff    72B Nov 14 18:36 MANIFEST
+-rw-r--r--   1 dwelch  staff   121B Nov 14 19:06 README.md
+drwxr-xr-x   5 dwelch  staff   170B Nov 14 18:45 build
+drwxr-xr-x   5 dwelch  staff   170B Nov 14 18:57 dist
+drwxr-xr-x   4 dwelch  staff   136B Nov 14 19:00 qq
+drwxr-xr-x   8 dwelch  staff   272B Nov 14 19:04 qq.egg-info
+-rw-r--r--   1 dwelch  staff   1.3K Nov 14 19:02 setup.py
+drwxr-xr-x   6 dwelch  staff   204B Nov 14 18:48 test
+drwxr-xr-x   7 dwelch  staff   238B Nov 14 18:00 venv

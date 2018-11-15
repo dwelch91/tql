@@ -18,7 +18,8 @@ setup(name='qq',
       entry_points={
           'console_scripts': ['qq=qq.__main__:main']
       },
-      install_requires=['prettytable'],
+      install_requires=['prettytable',
+                        'pendulum'],
       python_requires='~=3.5',
       classifiers=[
           'Development Status :: 3 - Alpha',
