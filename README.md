@@ -36,13 +36,91 @@ In a nutshell:
 
 Where the `<SQL>` is standard SQLite compatible SQL with the following modifier - when loading CSV data into a table,
 use the format `@<filename>` (for `<filename>`s w/o spaces), `@"<filename>"` or `@'<filename>'` 
-in the place of table names in `FROM` clauses.
+in the place of table names in `FROM` clause(s).
 
 Example:
 
 `tql "SELECT filename, size FROM @./data.csv WHERE size > 1024 SORT BY size DESC;" --auto-filter` 
 
-#### Detailed Options/Parameters
+#### Detailed Usage
+
+```
+tql [-h] 
+    [--dialect {excel,excel-tab,unix}]
+    [--delimiter DELIMITER] [--quotechar QUOTECHAR]
+    [--output OUTPUT] [--output-format {table,csv}]
+    [--save-db SAVE_DB | --load-db LOAD_DB]
+    [--skip-lines SKIP_LINES] [--headers HEADERS]
+    [--debug] [--filter FILTER] [--auto-filter]
+    [--filter-list] [--remap-column REMAP_COLUMN]
+    [--remap-table REMAP_TABLE]
+    [sql [sql ...]]
+
+positional arguments:
+  sql                   The SQL to execute. Use filenames surrounded by single
+                        or double quotes to specify CSV sources instead of
+                        existing tables in the FROM clause(s). You can use
+                        [:...:] replacements for special characters (see
+                        --help-filters for more information.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --dialect {excel,excel-tab,unix}, -t {excel,excel-tab,unix}
+                        Specify the CSV dialect. Valid values are excel,
+                        excel-tab, unix. Default is `unix`.
+  --delimiter DELIMITER, -d DELIMITER
+                        Specify the CSV delimiter to use. Default is a comma
+                        (,).
+  --quotechar QUOTECHAR, --quote-char QUOTECHAR, -q QUOTECHAR
+                        Specify the CSV quote charactor. Default is double
+                        quote (").
+  --output OUTPUT, -o OUTPUT
+                        Output file. Default is stdout (-).
+  --output-format {table,csv}, --out-format {table,csv}, --out-fmt {table,csv}, -f {table,csv}
+                        Output format. Valid value are 'table' and 'csv'.
+                        Default is table.
+  --save-db SAVE_DB, -s SAVE_DB
+                        Specify a SQLite database to use (instead of using an
+                        in-memory database. The database will remain after tql
+                        exits.
+  --load-db LOAD_DB, -l LOAD_DB
+                        Load an existing database instead of creating a new
+                        one.
+  --skip-lines SKIP_LINES, --skip SKIP_LINES, -k SKIP_LINES
+                        Skip `SKIP_LINES` lines at the beginning of the file.
+                        Default is 0.
+  --headers HEADERS, -r HEADERS
+                        Don't use the first non-skipped line for header/column
+                        names, use these header/column names instead. Format
+                        is a comma separated list of column names. Column
+                        names must not be SQLite reserved words.
+  --debug, -g           Turn on debug output.
+  --filter FILTER, -e FILTER
+                        Specify a column filter. Use one filter per
+                        switch/param. Format is <column_name>|filter|<0 or
+                        more params or additional filters in filter chain>.
+                        Filters have a variable number of parameters (0+).
+                        Filters may be chained.
+  --auto-filter, -a     Automatically apply the `num` filter to all column
+                        data.
+  --filter-list, --help-filters
+  --remap-column REMAP_COLUMN, --remap-header REMAP_COLUMN, -m REMAP_COLUMN
+                        A single column re-map in the form
+                        <col_name>=<new_col_name>. Use one switch for each
+                        column re-mapping. This overrides any column/header
+                        names that are auto-discovered or passed in via
+                        --headers/-r. You can use [:...:] replacements for
+                        special characters (see --help-filters for more
+                        information.
+  --remap-table REMAP_TABLE, --remap-file REMAP_TABLE, -T REMAP_TABLE
+                        A single table re-map in the form
+                        <table_name>=<new_table_name>. Use one switch for each
+                        table re-mapping. This overrides any table names that
+                        are auto-generated from filenames passed in via the
+                        SQL statement. You can use [:...:] replacements for
+                        special characters (see --help-filters for more
+                        information.
+```
 
 #### Data Filtering
 
