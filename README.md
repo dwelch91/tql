@@ -103,12 +103,12 @@ The type of the data after the last filter has run will be the type that is adde
 
 #### Character Replacements
 
-| Sequence        | Description          |
-|-----------------|----------------------|
+| Sequence        | Character Replacement  |
+|-----------------|------------------------|
 | `[:space:]`     | Space (` `)            |
 | `[:pipe:]`      | Pipe (`\|`)            |
-| `[:backslash:]` | Blackslash (`\\`)       |
-| `[:backtick:]`  | Backtick (```)         |
+| `[:backslash:]` | Blackslash (`\`)       |
+| `[:backtick:]`  | Backtick (`)           |
 | `[:squote:]`    | Single quote (`'`)     |
 | `[:dquote:]`    | Double quote (`"`)     |
 | `[:tab:]`       | Tab (`\t`)             |
