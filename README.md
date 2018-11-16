@@ -10,15 +10,18 @@ Inspired by the`q` tool (https://harelba.github.io/q/) but with some major diffe
 * Table remapping
 * Column remapping
 * Automatic or user specified headers/column names
-* Full Python 3.5- support (sorry, no Python 2.x support)
+* Full Python 3.5+ support (sorry, no Python 2.x support)
 * MIT license
 
 ### Planned Features
+* Input from stdin
 * Modification queries (TBD)
 * Regex-based filters
-* Input from stdin
-* Column merging and splitting
-* Github Flavored Markdown table output support
+* Locale based filters
+* Encodings support
+* CSV column merging and splitting
+* Github Flavored Markdown table output format support
+* Callable API
 
 ### Installation
 
