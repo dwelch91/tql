@@ -1,14 +1,18 @@
 import os
 import re
 
+from tql.exceptions import Error
 from tql.replacements import apply_char_replacements
 
-FROM_PATTERN = re.compile("""FROM (?=(?:(?<![a-z0-9/.~-])'([a-z0-9/.~-].*?)'(?![a-z0-9/.~-])|\"([a-z0-9/.~-].*?)\"(?![a-z0-9/~-])))""", re.I)
+
+FROM_PATTERN = re.compile(r"""FROM\s+@([\'\"])(?!\1)(.+?)\1|FROM\s+@([^\'\"\s]+)|FROM\s+(-)\s+""", re.I)
 
 
-def rewrite_sql(sql, table_remap):
+def rewrite_sql(sql, table_remap=None):
     """
-    Re-write the SQL, replacing filenames with table names
+    Re-write the SQL, replacing @filenames with table names.
+    Leave non-@ prefixed table names as-is.
+    Handle stdin - and @-
     :param sql:
     :param table_remap:
     :return:
@@ -18,21 +22,38 @@ def rewrite_sql(sql, table_remap):
     for s in sql:
         s = apply_char_replacements(s)
         for m in FROM_PATTERN.finditer(s):
-            path = m.group(1)
-            # TODO: Handle stdin ('-')
-            path = os.path.expanduser(path) if '~' in path else path
-            if not os.path.exists(path):
-                raise FileNotFoundError(f"File not found: {path}")
-            rewrite.append(s[i:m.start(1) - 1])  # TODO: REVISIT - maybe use re.sub?
-            i = m.end(1) + 1
-            filename = os.path.basename(path)
-            tablename = os.path.splitext(filename)[0]
+            #print(m.groups())
+            if m.group(2):
+                grp, path = 2, m.group(2)
+            elif m.group(3):
+                grp, path = 3, m.group(3)
+            elif m.group(4):
+                grp, path = 4, m.group(4)
+            else:
+                raise Error("Path parsing error.")
+
+            if path != '-':
+                path = os.path.expanduser(path) if '~' in path else path
+                if not os.path.exists(path):
+                    raise FileNotFoundError(f"File not found: {path}")
+
+            rewrite.append(s[i:m.start(grp) - (2 if grp == 2 else 1 if grp == 3 else 0)])
+            i = m.end(grp) + (1 if grp == 2 else 0)
+
+            if path != '-':
+                filename = os.path.basename(path)
+                tablename = os.path.splitext(filename)[0]
+            else:
+                filename = '-'
+                tablename = 'stdin'
+
             if path in table_remap:
                 tablename = table_remap[path]
             elif filename in table_remap:
                 tablename = table_remap[filename]
             elif tablename in table_remap:
                 tablename = table_remap[tablename]
+
             rewrite.append(tablename)
             tables[tablename] = path
 

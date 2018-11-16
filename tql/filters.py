@@ -62,9 +62,6 @@ FILTERS = {
     'utc': (lambda dt: pendulum.timezone('UTC').convert(dt), 0, "<column_name>|utc", "datetime", "datetime", "Convert a datetime to UTC."),
     'strftime': (lambda dt, fmt: dt.strftime(fmt), 1, "<column_name>|strftime|<format>", "datetime", "str", "Format a datetime using `strftime(<format>)`."),
 
-    # Column manipulation
-    # TODO: merge
-    # TODO: split
 }
 
 

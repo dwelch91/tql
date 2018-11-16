@@ -50,12 +50,13 @@ def main(args=None):
                         help="A single column re-map in the form <col_name>=<new_col_name>. Use one switch for each column re-mapping. "
                              "This overrides any column/header names that are auto-discovered or passed in via --headers/-r. "
                              "You can use [:...:] replacements for special characters (see --help-filters for more information.")
-    parser.add_argument('--remap-table', '--remap-file', '-l', action='append',
+    parser.add_argument('--remap-table', '--remap-file', '-T', action='append',
                         help="A single table re-map in the form <table_name>=<new_table_name>. Use one switch for each table re-mapping. "
                              "This overrides any table names that are auto-generated from filenames passed in via the SQL statement. "
                              "You can use [:...:] replacements for special characters (see --help-filters for more information.")
+    parser.add_argument('--merge-columns', '--merge', '-M')  # -M "one,two,three=foo"
+    parser.add_argument('--split-column', '--split', '-S')  # -S "foo=one,two,three"
 
-    # TODO: Subparsers? tql query ... tql insert ... tql delete ... tql filter-list ... etc.  Can a subparser be default? (problematic with SQL positional param)
     # TODO: Handle more CSV parser params
     # TODO: Handle duplicate column names (in -r)
     # TODO: Modification queries? (read CSV, apply filters, save to db, apply SQL modification(s), output new CSV)
