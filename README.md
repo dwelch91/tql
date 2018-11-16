@@ -45,8 +45,7 @@ Example:
 
 #### Available Data Filters
 
-
-| Filter      | Num. Params | Syntax**                           | In type* | Out type | Description                                               |
+| Filter      | Num. Params | Syntax                             | In type  | Out type | Description                                               |
 |-------------|-------------|------------------------------------|----------|----------|-----------------------------------------------------------|
 | abs         | 0           | <column_name>\|abs                  | num      | num      | Take the absolute value of a number.                      |
 | add         | 1           | <column_name>\|add|<value>          | num      | num      | Add <value> to number.                                    |
@@ -86,10 +85,10 @@ Example:
 | upper       | 0           | <column_name>\|upper                | str      | str      | Convert string to uppercase.                              |
 | utc         | 0           | <column_name>\|utc                  | datetime | datetime | Convert a datetime to UTC.                                |
 | zfill       | 1           | <column_name>\|zfill|<width>        | str      | str      | Zero fill string to <width> size.                         |
-----------------------------------------------------------------------------------------------------------------------------------------------------
-* Most filters that take numeric inputs will automatically apply the `num` filter to the column data prior to filtering.
-  Filters can be chained together using the pipe (|) character. For example, `c1|num|add|1|human`
-  The type of the data after the last filter has run will be the type that is added to the database.
+
+Note: Most filters that take numeric inputs will automatically apply the `num` filter to the column data prior to filtering.
+      Filters can be chained together using the pipe (|) character. For example, `c1|num|add|1|human`
+      The type of the data after the last filter has run will be the type that is added to the database.
 
 
 #### Auto Filtering
@@ -99,6 +98,25 @@ Example:
 #### Table Remapping
 
 #### Character Replacements
+
+| Sequence      | Description          |
+|---------------|----------------------|
+| [:space:]     | Space ( )            |
+| [:pipe:]      | Pipe (\|)             |
+| [:backslash:] | Blackslash (\)       |
+| [:backtick:]  | Backtick (`)         |
+| [:squote:]    | Single quote (')     |
+| [:dquote:]    | Double quote (")     |
+| [:tab:]       | Tab (\t)             |
+| [:cr:]        | Carriage return (\r) |
+| [:newline:]   | Newline (\n)         |
+| [:n:]         | Newline (\n)         |
+| [:comma:]     | Comma (,)            |
+| [:colon:]     | Colon (:)            |
+| [:amp:]       | Ampersand (&)        |
+| [:ampersand:] | Ampersand (&)        |
+| [:gt:]        | Greater than (>)     |
+| [:lt:]        | Less than (<)        |
 
 #### Save Database
 
