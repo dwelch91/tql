@@ -8,7 +8,7 @@ from tql.exceptions import Error
 from tql.filters import print_filter_list_table, preprocess_filters, apply_filters
 from tql.output import do_output
 from tql.sql import rewrite_sql, process_table_remapping, process_column_remapping
-from tql.utils import error, expand_path
+from tql.utils import error, expand_path_and_exists
 
 DEBUG = False
 
@@ -97,19 +97,15 @@ def main(args=None):
     column_remapping = process_column_remapping(args.remap_column)
     debug(column_remapping, 'column_remapping=')
 
-    # Setup auto filters
-    if args.auto_filter:
-        pass
-
     # Open the database
     if args.save_db:
-        path = expand_path(args.save_db)
-        if os.path.exists(path):
+        path, exists = expand_path_and_exists(args.save_db)
+        if exists:
             raise Error("fDatabase file {path} already exists.")
         con = sqlite3.connect(path)
     elif args.load_db:
-        path = expand_path(args.load_db)
-        if not os.path.exists(path):
+        path, exists = expand_path_and_exists(args.load_db)
+        if not exists:
             raise FileNotFoundError(f"Database file {path} not found.")
         con = sqlite3.connect(path)
     else:

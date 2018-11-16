@@ -3,7 +3,7 @@ import re
 
 from tql.exceptions import Error
 from tql.replacements import apply_char_replacements
-from tql.utils import expand_path
+from tql.utils import expand_path_and_exists
 
 FROM_PATTERN = re.compile(r"""FROM\s+@([\'\"])(?!\1)(.+?)\1|FROM\s+@([^\'\"\s]+)|FROM\s+(-)\s+""", re.I)
 
@@ -32,8 +32,8 @@ def rewrite_sql(sql, table_remap=None):
                 raise Error("Path parsing error.")
 
             if path != '-':
-                path = expand_path(path)
-                if not os.path.exists(path):
+                path, exists = expand_path_and_exists(path)
+                if not exists:
                     raise FileNotFoundError(f"File not found: {path}")
 
             rewrite.append(s[i:m.start(grp) - (2 if grp == 2 else 1 if grp == 3 else 0)])
