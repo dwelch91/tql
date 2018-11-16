@@ -1,5 +1,6 @@
 # Text Query Language (tql)
-Like the `q` tool (https://harelba.github.io/q/) but Python 3.5+ only and uses SQLite to handle its own SQL parsing.
+Like the `q` tool (https://harelba.github.io/q/) but Python 3.5+ only, has extensive filtering, 
+and uses SQLite to handle its own SQL parsing. 
 
 ### Features
 * Extensive support for data pre-filtering, conversions, etc. of CSV/TSV data before it is added to database
@@ -7,6 +8,8 @@ Like the `q` tool (https://harelba.github.io/q/) but Python 3.5+ only and uses S
 * Pretty table output
 * CSV output
 * Database output
+* Table re-mapping
+* Column re-mapping
 * Automatic or user specified headers/column names
 * Full Python 3.5+ support (sorry, no Python 2.x support)
 * MIT license
@@ -22,6 +25,20 @@ Like the `q` tool (https://harelba.github.io/q/) but Python 3.5+ only and uses S
 
 ### Documentation
 
+#### Use Cases
+
+##### CSV -> filter/sort/aggregate/etc -> CSV (or table)
+Without `-s`/`--save-db` or `-l`/`--load-db`, `qq` will load the CSV into an in-memory database, perform the SQL query, 
+and output the result in the chosen output format.
+
+##### CSV -> filter/sort/aggregate/etc -> database -> CSV (or table)
+Using `-s`/`--save-db` will force `qq` to retain an on-disk database of the loaded CSV data. 
+It will still produce results in the chosen output format. 
+The database can then be used for further data mining or re-used in `qq` using the `-l`/`--load-db` switch.
+
+##### CSV + database -> filter/sort/aggregate/etc -> database -> CSV (or table)
+Using the `-l`/`--load-db` switch will cause `qq` to load an existing database and load the CSV data into a new table in the database. 
+It will still produce results in the chosen output format. 
 
 ### How Tos
 
