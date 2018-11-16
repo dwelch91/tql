@@ -6,7 +6,6 @@ authors = ["Don Welch <dwelch91@gmail.com>"]
 license = "MIT"
 homepage = "https://github.com/dwelch91/qq"
 repository = "https://github.com/dwelch91/qq"
-platforms = ["unix", "linux", "macos"]
 readme = "README.md"
 keywords = ["qq", "csv", "sql"]
 classifiers=[
