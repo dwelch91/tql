@@ -1,10 +1,9 @@
-# Text Query Language (tql)
 Inspired by the`q` tool (https://harelba.github.io/q/) but with some major differences.
 
 ### Features
 * Extensive support for data pre-filtering, conversions, etc. of CSV/TSV data before it is added to database
 * Full support for all of SQLite features
-* Pretty table output (Markdown-compatible)
+* Pretty table output
 * CSV output
 * Database output
 * Add data to existing database
@@ -19,6 +18,7 @@ Inspired by the`q` tool (https://harelba.github.io/q/) but with some major diffe
 * Regex-based filters
 * Input from stdin
 * Column merging and splitting
+* Github Flavored Markdown table output support
 
 ### Installation
 
@@ -86,9 +86,13 @@ Example:
 | utc         | 0           | <column_name>\|utc                  | datetime | datetime | Convert a datetime to UTC.                                |
 | zfill       | 1           | <column_name>\|zfill|<width>        | str      | str      | Zero fill string to <width> size.                         |
 
-Note: Most filters that take numeric inputs will automatically apply the `num` filter to the column data prior to filtering.
-      Filters can be chained together using the pipe (|) character. For example, `c1|num|add|1|human`
-      The type of the data after the last filter has run will be the type that is added to the database.
+Notes: 
+
+Most filters that take numeric inputs will automatically apply the `num` filter to the column data prior to filtering.
+
+Filters can be chained together using the pipe (|) character. For example, `c1|num|add|1|human`
+
+The type of the data after the last filter has run will be the type that is added to the database.
 
 
 #### Auto Filtering
@@ -99,24 +103,24 @@ Note: Most filters that take numeric inputs will automatically apply the `num` f
 
 #### Character Replacements
 
-| Sequence      | Description          |
-|---------------|----------------------|
-| [:space:]     | Space ( )            |
-| [:pipe:]      | Pipe (\|)             |
-| [:backslash:] | Blackslash (\)       |
-| [:backtick:]  | Backtick (`)         |
-| [:squote:]    | Single quote (')     |
-| [:dquote:]    | Double quote (")     |
-| [:tab:]       | Tab (\t)             |
-| [:cr:]        | Carriage return (\r) |
-| [:newline:]   | Newline (\n)         |
-| [:n:]         | Newline (\n)         |
-| [:comma:]     | Comma (,)            |
-| [:colon:]     | Colon (:)            |
-| [:amp:]       | Ampersand (&)        |
-| [:ampersand:] | Ampersand (&)        |
-| [:gt:]        | Greater than (>)     |
-| [:lt:]        | Less than (<)        |
+| Sequence        | Description          |
+|-----------------|----------------------|
+| `[:space:]`     | Space (` `)            |
+| `[:pipe:]`      | Pipe (`\|`)            |
+| `[:backslash:]` | Blackslash (`\\`)       |
+| `[:backtick:]`  | Backtick (```)         |
+| `[:squote:]`    | Single quote (`'`)     |
+| `[:dquote:]`    | Double quote (`"`)     |
+| `[:tab:]`       | Tab (`\t`)             |
+| `[:cr:]`        | Carriage return (`\r`) |
+| `[:newline:]`   | Newline (`\n`)         |
+| `[:n:]`         | Newline (`\n`)         |
+| `[:comma:]`     | Comma (`,`)            |
+| `[:colon:]`     | Colon (`:`)            |
+| `[:amp:]`       | Ampersand (`&`)        |
+| `[:ampersand:]` | Ampersand (`&`)        |
+| `[:gt:]`        | Greater than (`>`)     |
+| `[:lt:]`        | Less than (`<`)        |
 
 #### Save Database
 
