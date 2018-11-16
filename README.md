@@ -4,12 +4,12 @@ Inspired by the`q` tool (https://harelba.github.io/q/) but with some major diffe
 ### Features
 * Extensive support for data pre-filtering, conversions, etc. of CSV/TSV data before it is added to database
 * Full support for all of SQLite features
-* Pretty table output
+* Pretty table output (Markdown-compatible)
 * CSV output
 * Database output
 * Add data to existing database
-* Table re-mapping
-* Column re-mapping
+* Table remapping
+* Column remapping
 * Automatic or user specified headers/column names
 * Full Python 3.5+ support (sorry, no Python 2.x support)
 * MIT license
@@ -27,6 +27,35 @@ Inspired by the`q` tool (https://harelba.github.io/q/) but with some major diffe
 
 #### Usage
 
+In a nutshell:
+
+`tql "<SQL>" [options]`
+
+Where the `<SQL>` is standard SQLite compatible SQL with the following modifier - when loading CSV data into a table,
+use the format `@<filename>` (for `<filename>`s w/o spaces), `@"<filename>"` or `@'<filename>'` 
+in the place of table names in `FROM` clauses.
+
+Example:
+
+`tql "SELECT filename, size FROM @./data.csv WHERE size > 1024 SORT BY size DESC;" --auto-filter` 
+
+#### Detailed Options/Parameters
+
+#### Data Filtering
+
+#### Available Data Filters
+
+#### Auto Filtering
+
+#### Column Remapping
+
+#### Table Remapping
+
+#### Character Replacements
+
+#### Save Database
+
+#### Load Database
 
 #### Use Cases
 
@@ -50,18 +79,17 @@ Using the `-l`/`--load-db` switch will cause `tql` to load an existing database.
 `FROM` clauses (ie, non-CSV files), the specified SQL will be run against the database and a CSV (or table) will
 produce results in the chosen output format. 
 
-### How Tos
+### FAQs
 
 #### How do I change the order of the columns in the output?
-Use SELECT with the column names listed out, the order which they appear will make the output columns in the same order. 
-(reword this)
+Use `SELECT` with the column names listed out; the order which they appear will produce output columns in the same order. 
 
 #### How do I filter, sort, etc on a numeric column?
 `tql` does not automatically convert CSV data into integers or floats. 
 There are two options:
 1. Coerce the data to either an integer or float using a filter (e.g., `int`) on the target column and then SQLite will be able to 
 operate on the column as a numeric value for sorting, comparisons, etc.
-2. Use the -a/--auto-filter switch that will try to convert all column data to numeric values. Data that cannot be converted
+2. Use the `-a`/`--auto-filter` switch that will try to convert all column data to numeric values. Data that cannot be converted
 to a numeric value will remain a string.
 
 ### Acknowledgements
