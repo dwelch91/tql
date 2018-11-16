@@ -4,7 +4,7 @@ import sys
 
 from prettytable import PrettyTable
 
-from qq.exceptions import DatabaseError
+from tql.exceptions import DatabaseError
 
 
 def do_output(sql, cur, output, output_format, delimiter):

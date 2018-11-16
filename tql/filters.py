@@ -3,9 +3,9 @@ from math import ceil, floor, trunc
 import pendulum as pendulum
 from prettytable import PrettyTable
 
-from qq.exceptions import FilterError
-from qq.utils import to_num, to_int, to_float, humanize, dehumanize, ordinal
-from qq.replacements import apply_char_replacements, print_replacements_table
+from tql.exceptions import FilterError
+from tql.utils import to_num, to_int, to_float, humanize, dehumanize, ordinal
+from tql.replacements import apply_char_replacements, print_replacements_table
 
 
 FILTERS = {

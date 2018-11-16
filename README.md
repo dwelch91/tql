@@ -1,4 +1,4 @@
-# qq
+# Text Query Language (tql)
 Like the `q` tool (https://harelba.github.io/q/) but Python 3.5+ only and uses SQLite to handle its own SQL parsing.
 
 ### Features
@@ -30,7 +30,7 @@ Use SELECT with the column names listed out, the order which they appear will ma
 (reword this)
 
 #### How do I filter, sort, etc on a numeric column?
-qq does not automatically convert CSV data into integers or floats. 
+`tql` does not automatically convert CSV data into integers or floats. 
 Coerce the data to either an integer or float using a filter on the target column and then SQLite will be able to 
 operate on the column as a numeric value for sorting, comparisons, etc.
 

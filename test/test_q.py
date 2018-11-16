@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from qq.__main__ import main
+from tql.__main__ import main
 
 
 HEADERS = 'perms, links, owner, grp, size, date, time, filename'

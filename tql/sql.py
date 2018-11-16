@@ -1,7 +1,7 @@
 import os
 import re
 
-from qq.replacements import apply_char_replacements
+from tql.replacements import apply_char_replacements
 
 FROM_PATTERN = re.compile("""FROM (?=(?:(?<![a-z0-9/.~-])'([a-z0-9/.~-].*?)'(?![a-z0-9/.~-])|\"([a-z0-9/.~-].*?)\"(?![a-z0-9/~-])))""", re.I)
 

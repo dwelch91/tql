@@ -3,11 +3,11 @@ import argparse
 import csv
 import sqlite3
 
-from qq.exceptions import Error
-from qq.filters import print_filter_list_table, preprocess_filters, apply_filters
-from qq.output import do_output
-from qq.sql import rewrite_sql, process_table_remapping, process_column_remapping
-from qq.utils import error
+from tql.exceptions import Error
+from tql.filters import print_filter_list_table, preprocess_filters, apply_filters
+from tql.output import do_output
+from tql.sql import rewrite_sql, process_table_remapping, process_column_remapping
+from tql.utils import error
 
 DEBUG = False
 
@@ -32,7 +32,7 @@ def main(args=None):
     parser.add_argument('--output', '-o', default='-', help="Output file. Default is stdout (-).")
     parser.add_argument('--output-format', '--out-format', '--out-fmt', '-f', default='table', choices=['table', 'csv'],
                         help="Output format. Valid value are 'table' and 'csv'. Default is table.")
-    parser.add_argument('--save-db', '-s', help="Specify a SQLite database to use (instead of using an in-memory database. The database will remain after qq exits.")
+    parser.add_argument('--save-db', '-s', help="Specify a SQLite database to use (instead of using an in-memory database. The database will remain after tql exits.")
     #parser.add_argument('--load-db', '-l', help="Load an existing database instead of creating a new one.")
     parser.add_argument('--skip-lines', '--skip', '-k', type=int, default=0, help="Skip `SKIP_LINES` lines at the beginning of the file. Default is 0.")
     parser.add_argument('--headers', '-r',
@@ -55,7 +55,7 @@ def main(args=None):
                              "This overrides any table names that are auto-generated from filenames passed in via the SQL statement. "
                              "You can use [:...:] replacements for special characters (see --help-filters for more information.")
 
-    # TODO: Subparsers? qq query ... qq insert ... qq delete ... qq filter-list ... etc.  Can a subparser be default? (problematic with SQL positional param)
+    # TODO: Subparsers? tql query ... tql insert ... tql delete ... tql filter-list ... etc.  Can a subparser be default? (problematic with SQL positional param)
     # TODO: Handle more CSV parser params
     # TODO: Handle duplicate column names (in -r)
     # TODO: Modification queries? (read CSV, apply filters, save to db, apply SQL modification(s), output new CSV)

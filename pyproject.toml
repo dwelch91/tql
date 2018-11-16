@@ -1,13 +1,13 @@
 [tool.poetry]
-name = "qq"
+name = "tql"
 version = "0.1.0"
 description = "Run SQL against CSV or TSV file(s)."
 authors = ["Don Welch <dwelch91@gmail.com>"]
 license = "MIT"
-homepage = "https://github.com/dwelch91/qq"
-repository = "https://github.com/dwelch91/qq"
+homepage = "https://github.com/dwelch91/tql"
+repository = "https://github.com/dwelch91/tql"
 readme = "README.md"
-keywords = ["qq", "csv", "sql"]
+keywords = ["tql", "csv", "sql"]
 classifiers=[
           'Development Status :: 3 - Alpha',
           'Environment :: Console',
@@ -34,7 +34,7 @@ pendulum = "^2.0"
 [tool.poetry.dev-dependencies]
 
 [tool.poetry.scripts]
-qq = 'qq.__main__:main'
+tql = 'tql.__main__:main'
 
 [build-system]
 requires = ["poetry>=0.12"]

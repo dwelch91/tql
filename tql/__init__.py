@@ -1,4 +1,4 @@
-name = 'qq'
+name = 'tql'
 
 
 def execute():

@@ -1,7 +1,7 @@
 from unittest import TestCase
 
-from qq.__main__ import main
-from qq.exceptions import DatabaseError
+from tql.__main__ import main
+from tql.exceptions import DatabaseError
 
 
 class TestFailures(TestCase):
