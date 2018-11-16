@@ -129,7 +129,7 @@ optional arguments:
 | Filter      | Num. Params | Syntax                             | In type  | Out type | Description                                               |
 |-------------|-------------|------------------------------------|----------|----------|-----------------------------------------------------------|
 | abs         | 0           | <column_name>\|abs                  | num      | num      | Take the absolute value of a number.                      |
-| add         | 1           | <column_name>\|add\|<value>          | num      | num      | Add <value> to number.                                    |
+| add         | 1           | <column_name>\|add\|\<value\>          | num      | num      | Add <value> to number.                                    |
 | capitalize  | 0           | <column_name>\|capitalize           | str      | str      | Capitalize string.                                        |
 | ceil        | 0           | <column_name>\|ceil                 | num      | num      | Return the ceiling value of a number.                     |
 | datetime    | 0           | <column_name>\|datetime             | str      | datetime | Parse a datetime string.                                  |
