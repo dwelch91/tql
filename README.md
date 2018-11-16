@@ -11,7 +11,7 @@ Inspired by the`q` tool (https://harelba.github.io/q/) but with some major diffe
 * Table remapping
 * Column remapping
 * Automatic or user specified headers/column names
-* Full Python 3.5+ support (sorry, no Python 2.x support)
+* Full Python 3.5- support (sorry, no Python 2.x support)
 * MIT license
 
 ### Planned Features
@@ -45,9 +45,9 @@ Example:
 
 #### Available Data Filters
 
-+-------------+-------------+------------------------------------+----------+----------+-----------------------------------------------------------+
+----------------------------------------------------------------------------------------------------------------------------------------------------
 | Filter      | Num. Params | Syntax**                           | In type* | Out type | Description                                               |
-+-------------+-------------+------------------------------------+----------+----------+-----------------------------------------------------------+
+----------------------------------------------------------------------------------------------------------------------------------------------------
 | abs         | 0           | <column_name>|abs                  | num      | num      | Take the absolute value of a number.                      |
 | add         | 1           | <column_name>|add|<value>          | num      | num      | Add <value> to number.                                    |
 | capitalize  | 0           | <column_name>|capitalize           | str      | str      | Capitalize string.                                        |
@@ -86,7 +86,7 @@ Example:
 | upper       | 0           | <column_name>|upper                | str      | str      | Convert string to uppercase.                              |
 | utc         | 0           | <column_name>|utc                  | datetime | datetime | Convert a datetime to UTC.                                |
 | zfill       | 1           | <column_name>|zfill|<width>        | str      | str      | Zero fill string to <width> size.                         |
-+-------------+-------------+------------------------------------+----------+----------+-----------------------------------------------------------+
+----------------------------------------------------------------------------------------------------------------------------------------------------
 * Most filters that take numeric inputs will automatically apply the `num` filter to the column data prior to filtering.
   Filters can be chained together using the pipe (|) character. For example, `c1|num|add|1|human`
   The type of the data after the last filter has run will be the type that is added to the database.
@@ -118,7 +118,7 @@ Using `-s`/`--save-db` will force `tql` to retain an on-disk database of the loa
 It will still produce results in the chosen output format. 
 The database can then be used in subsequent `-l`/`--load-db` workflows or manipulated using any desired SQLite database tool.
 
-##### CSV + database -> filter/sort/aggregate/etc (SQL) -> database -> CSV (or table)
+##### CSV - database -> filter/sort/aggregate/etc (SQL) -> database -> CSV (or table)
 Using the `-l`/`--load-db` switch will cause `tql` to load an existing database and load the CSV data into a new table in the database. 
 It will still produce results in the chosen output format. The database can then be used in subsequent `-l`/`--load-db` 
 workflows or manipulated using any desired SQLite database tool.
