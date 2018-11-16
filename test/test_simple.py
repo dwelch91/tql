@@ -20,6 +20,7 @@ class TestSimple(TestCase):
                    '-e', 'perms|replace|-|[:pipe:]',  # filter
                    '-e', 'grp|suffix|!',  # filter
                    '-e', 'filename|prefix|~/[:space:]foo[:pipe:]/[:backslash:]|suffix|[:pipe:]',  # filter
+                   '-f', 'table'
                    ])
 
 
@@ -50,6 +51,7 @@ class TestSimple(TestCase):
                    '-m', 'group=grp',  # re-map column name
                    '-m', 'from=frm',  # re-map column name
                    '-m', 'to=too',  # re-map column name
+                   '-f', 'pandas'
                    ])
 
         # TODO: Fails!!!!

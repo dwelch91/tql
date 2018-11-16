@@ -1,14 +1,14 @@
-Inspired by the`q` tool (https://harelba.github.io/q/) but with some major differences.
+## tql - Read, Modify, and Generate Tabular Data 
+Inspired by the`q` tool (https://harelba.github.io/q/)...
 
 ### Features
-* Extensive support for data pre-filtering, conversions, etc. of CSV/TSV data before it is added to database
+* Support for reading of CSV, TSV, HTML, JSON, LTSV, Markdown, MediaWiki, Excel, etc. formats
+* Extensive support for data pre-filtering, conversions, etc. of input data before it is added to database
 * Full support for all of SQLite features
-* Pretty table output
-* CSV output
-* Database output
-* Add data to existing database
-* Table remapping
-* Column remapping
+* Support for writing in CSV, TSV, Excel, LaTex, Markdown, JSON, rst, TOML, etc. formats
+* Create database, add data to existing database, or use in-memory database
+* Table name remapping
+* Column name remapping
 * Automatic or user specified headers/column names
 * Full Python 3.5+ support (sorry, no Python 2.x support)
 * MIT license
@@ -250,6 +250,8 @@ Python (https://www.python.org/)
 
 SQLite (https://www.sqlite.org/index.html)
 
-PrettyTable (https://pypi.org/project/PrettyTable/)
-
 Pendulum (https://pendulum.eustace.io/)
+
+pytablereader (https://github.com/thombashi/pytablereader)
+
+pytablewriter (https://github.com/thombashi/pytablewriter)

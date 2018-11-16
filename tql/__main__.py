@@ -4,6 +4,8 @@ import argparse
 import csv
 import sqlite3
 
+from pytablewriter import TableWriterFactory
+
 from tql.exceptions import Error
 from tql.filters import print_filter_list_table, preprocess_filters, apply_filters
 from tql.output import do_output
@@ -31,7 +33,7 @@ def main(args=None):
     parser.add_argument('--delimiter', '-d', default=',', help="Specify the CSV delimiter to use. Default is a comma (,).")
     parser.add_argument('--quotechar', '--quote-char', '-q', default='"', help='Specify the CSV quote charactor. Default is double quote (").')
     parser.add_argument('--output', '-o', default='-', help="Output file. Default is stdout (-).")
-    parser.add_argument('--output-format', '--out-format', '--out-fmt', '-f', default='table', choices=['table', 'csv'],
+    parser.add_argument('--output-format', '--out-format', '--out-fmt', '-f', default='table', choices=TableWriterFactory.get_format_name_list() + ['table', 'ptable', 'pt'],
                         help="Output format. Valid value are 'table' and 'csv'. Default is table.")
 
     db_group = parser.add_mutually_exclusive_group()

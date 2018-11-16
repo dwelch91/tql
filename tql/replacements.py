@@ -1,4 +1,4 @@
-from prettytable import PrettyTable
+# from prettytable import PrettyTable
 
 
 REPLACEMENTS = [
@@ -33,8 +33,9 @@ def apply_char_replacements(s):
 
 
 def print_replacements_table():
-    table = PrettyTable(('Sequence', 'Description'))
-    table.align = 'l'
-    for seq, _, desc in REPLACEMENTS:
-        table.add_row((seq, desc))
-    print(table)
+    # table = PrettyTable(('Sequence', 'Description'))
+    # table.align = 'l'
+    # for seq, _, desc in REPLACEMENTS:
+    #     table.add_row((seq, desc))
+    # print(table)
+    pass

@@ -1,9 +1,12 @@
 from math import ceil, floor, trunc
 
 import pendulum as pendulum
-from prettytable import PrettyTable
+# from prettytable import PrettyTable
+import pytablewriter
+from pytablewriter import TableWriterFactory
 
 from tql.exceptions import FilterError
+# from tql.output import get_table_writer
 from tql.utils import to_num, to_int, to_float, humanize, dehumanize, ordinal
 from tql.replacements import apply_char_replacements, print_replacements_table
 
@@ -85,17 +88,21 @@ def preprocess_filters(filter_args):
     return filters
 
 
-def print_filter_list_table():
+def print_filter_list_table(fmt='md'):
     """
     Print out a nice table of filters w/docs
     :return:
     """
-    table = PrettyTable(('Filter', 'Num. Params', 'Syntax**', 'In type*', 'Out type', 'Description'))
-    table.align = 'l'
+    table = TableWriterFactory.create_from_format_name(fmt)
+    # table.table_name = "Filter List Table"
+    table.header_list = ('Filter', 'Num. Params', 'Syntax**', 'In type*', 'Out type', 'Description')
+    table_data = []
     for func_name in sorted(FILTERS.keys()):
         values = FILTERS[func_name]
-        table.add_row([func_name] + list(values[1:]))
-    print(table)
+        table_data.append([func_name] + list(values[1:]))
+    table.value_matrix = table_data
+    table.write_table()
+    # print(table)
     print("* Most filters that take numeric inputs will automatically apply the `num` filter to the column data prior to filtering.\n"
           "  Filters can be chained together using the pipe (|) character. For example, `c1|num|add|1|human`\n"
           "  The type of the data after the last filter has run will be the type that is added to the database.\n")
