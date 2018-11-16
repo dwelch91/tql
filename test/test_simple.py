@@ -5,10 +5,6 @@ from tql.__main__ import main
 
 class TestSimple(TestCase):
 
-    # def test_1(self):
-    #     main(args=['-g'])
-
-
     def test_skip_lines(self):
         main(args=["SELECT * FROM @'./data/ls.txt' WHERE size > 500 GROUP BY perms;",
                    '-k', '1',  # skip 1 line
@@ -67,3 +63,16 @@ class TestSimple(TestCase):
 
     def test_filter_list(self):
         main(args=['--filter-list'])
+
+
+    def test_auto_filters(self):
+        main(args=["SELECT * FROM @'./data/ls.txt' WHERE links > 1;",
+                   '-k', '1',  # skip 1 line
+                   '-r', 'perms, links, owner, grp, size, month, day, time, filename',  # column names
+                   '-d', ' ',  # space delimited
+                   #'-g',  # debug
+                   '-e', 'size|dehumanize',
+                   '-T', 'ls=dirlist',  # re-map table name
+                   '-a'  # auto filtering
+                   ])
+

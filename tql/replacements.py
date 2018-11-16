@@ -12,8 +12,13 @@ REPLACEMENTS = [
     ('[:cr:]', '\r', 'Carriage return (\\r)'),
     ('[:newline:]', '\n', 'Newline (\\n)'),
     ('[:n:]', '\n', 'Newline (\\n)'),
+    ('[:comma:]', ',', 'Comma (,)'),
+    ('[:colon:]', ':', 'Colon (:)'),
+    ('[:amp:]', '&', 'Ampersand (&)'),
+    ('[:ampersand:]', '&', 'Ampersand (&)'),
+    ('[:gt:]', '>', 'Greater than (>)'),
+    ('[:lt:]', '<', 'Less than (<)'),
 ]
-
 
 
 def apply_char_replacements(s):

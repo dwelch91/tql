@@ -3,7 +3,7 @@ import re
 
 from tql.exceptions import Error
 from tql.replacements import apply_char_replacements
-
+from tql.utils import expand_path
 
 FROM_PATTERN = re.compile(r"""FROM\s+@([\'\"])(?!\1)(.+?)\1|FROM\s+@([^\'\"\s]+)|FROM\s+(-)\s+""", re.I)
 
@@ -22,7 +22,6 @@ def rewrite_sql(sql, table_remap=None):
     for s in sql:
         s = apply_char_replacements(s)
         for m in FROM_PATTERN.finditer(s):
-            #print(m.groups())
             if m.group(2):
                 grp, path = 2, m.group(2)
             elif m.group(3):
@@ -33,7 +32,7 @@ def rewrite_sql(sql, table_remap=None):
                 raise Error("Path parsing error.")
 
             if path != '-':
-                path = os.path.expanduser(path) if '~' in path else path
+                path = expand_path(path)
                 if not os.path.exists(path):
                     raise FileNotFoundError(f"File not found: {path}")
 

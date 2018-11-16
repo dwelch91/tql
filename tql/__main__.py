@@ -1,3 +1,4 @@
+import os
 import sys
 import argparse
 import csv
@@ -7,7 +8,7 @@ from tql.exceptions import Error
 from tql.filters import print_filter_list_table, preprocess_filters, apply_filters
 from tql.output import do_output
 from tql.sql import rewrite_sql, process_table_remapping, process_column_remapping
-from tql.utils import error
+from tql.utils import error, expand_path
 
 DEBUG = False
 
@@ -32,8 +33,11 @@ def main(args=None):
     parser.add_argument('--output', '-o', default='-', help="Output file. Default is stdout (-).")
     parser.add_argument('--output-format', '--out-format', '--out-fmt', '-f', default='table', choices=['table', 'csv'],
                         help="Output format. Valid value are 'table' and 'csv'. Default is table.")
-    parser.add_argument('--save-db', '-s', help="Specify a SQLite database to use (instead of using an in-memory database. The database will remain after tql exits.")
-    #parser.add_argument('--load-db', '-l', help="Load an existing database instead of creating a new one.")
+
+    db_group = parser.add_mutually_exclusive_group()
+    db_group.add_argument('--save-db', '-s', help="Specify a SQLite database to use (instead of using an in-memory database. The database will remain after tql exits.")
+    db_group.add_argument('--load-db', '-l', help="Load an existing database instead of creating a new one.")
+
     parser.add_argument('--skip-lines', '--skip', '-k', type=int, default=0, help="Skip `SKIP_LINES` lines at the beginning of the file. Default is 0.")
     parser.add_argument('--headers', '-r',
                         help="Don't use the first non-skipped line for header/column names, use these header/column names instead. "
@@ -44,7 +48,7 @@ def main(args=None):
                         help="Specify a column filter. Use one filter per switch/param. "
                              "Format is <column_name>|filter|<0 or more params or additional filters in filter chain>.  "
                              "Filters have a variable number of parameters (0+). Filters may be chained.")
-    #parser.add_argument('--auto-filter', '-a', action='store_true', help="Automatically apply the `num` filter to all column data.")
+    parser.add_argument('--auto-filter', '-a', action='store_true', help="Automatically apply the `num` filter to all column data.")
     parser.add_argument('--filter-list', '--help-filters', action='store_true')
     parser.add_argument('--remap-column', '--remap-header', '-m', action='append',
                         help="A single column re-map in the form <col_name>=<new_col_name>. Use one switch for each column re-mapping. "
@@ -54,8 +58,8 @@ def main(args=None):
                         help="A single table re-map in the form <table_name>=<new_table_name>. Use one switch for each table re-mapping. "
                              "This overrides any table names that are auto-generated from filenames passed in via the SQL statement. "
                              "You can use [:...:] replacements for special characters (see --help-filters for more information.")
-    parser.add_argument('--merge-columns', '--merge', '-M')  # -M "one,two,three=foo"
-    parser.add_argument('--split-column', '--split', '-S')  # -S "foo=one,two,three"
+    #parser.add_argument('--merge-columns', '--merge', '-M')  # -M "one,two,three=foo"
+    #parser.add_argument('--split-column', '--split', '-S')  # -S "foo=one,two,three"
 
     # TODO: Handle more CSV parser params
     # TODO: Handle duplicate column names (in -r)
@@ -93,13 +97,23 @@ def main(args=None):
     column_remapping = process_column_remapping(args.remap_column)
     debug(column_remapping, 'column_remapping=')
 
-    # TODO: Allow for database "re-use" - open an existing database file and use other tables in it for JOINs, etc along with the CSV input table(s)
-    # TODO: --load-db <database name>
-    # TODO: Have to handle case where db has an existing table with same name as one of the CSV input table(s)
+    # Setup auto filters
+    if args.auto_filter:
+        pass
+
+    # Open the database
     if args.save_db:
-        con = sqlite3.connect(args.save_db)
+        path = expand_path(args.save_db)
+        if os.path.exists(path):
+            raise Error("fDatabase file {path} already exists.")
+        con = sqlite3.connect(path)
+    elif args.load_db:
+        path = expand_path(args.load_db)
+        if not os.path.exists(path):
+            raise FileNotFoundError(f"Database file {path} not found.")
+        con = sqlite3.connect(path)
     else:
-        con = sqlite3.connect(":memory:")  # TODO: will be used if -l or -s not specified
+        con = sqlite3.connect(":memory:")
 
     cur = con.cursor()
 
@@ -120,9 +134,18 @@ def main(args=None):
                     placeholders = ', '.join(['?'] * len(row))
                     col_src = args.headers.split(',') if args.headers else row
                     colnames = [column_remapping.get(n.strip()) or n.strip() for n in col_src]
+
+                    # Apply auto filtering
+                    if args.auto_filter:
+                        for col in colnames:
+                            if col not in filters:
+                                filters[col] = ['num']
+                        debug(filters, 'filters (auto)=')
+
                     debug(colnames, 'colnames=')
                     colnames_str = ','.join(colnames)
 
+                    # TODO: For -l/--load-db, handle case where db has an existing table with same name as one of the CSV input table(s)
                     s = f"CREATE TABLE {tablename} ({colnames_str});"
                     debug(s, 'table create: ')
                     try:

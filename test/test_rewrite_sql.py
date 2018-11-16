@@ -1,6 +1,7 @@
 from unittest import TestCase, skip
 
 from tql.sql import rewrite_sql
+from tql.utils import expand_path
 
 
 class TestRewriteSql(TestCase):
@@ -10,7 +11,7 @@ class TestRewriteSql(TestCase):
         table_remap = {}
         sql, map = rewrite_sql([sql], table_remap)
         self.assertEqual("""SELECT * FROM remap WHERE frm = 'y';""", sql)
-        self.assertEqual({'remap': './data/remap.csv'}, map)
+        self.assertEqual({'remap': expand_path('./data/remap.csv')}, map)
 
 
     def test_rewrite_squotes(self):
@@ -18,7 +19,7 @@ class TestRewriteSql(TestCase):
         table_remap = {}
         sql, map = rewrite_sql([sql], table_remap)
         self.assertEqual("""SELECT * FROM remap WHERE frm = 'y';""", sql)
-        self.assertEqual({'remap': './data/remap.csv'}, map)
+        self.assertEqual({'remap': expand_path('./data/remap.csv')}, map)
 
 
     def test_rewrite_no_quotes(self):
@@ -26,7 +27,7 @@ class TestRewriteSql(TestCase):
         table_remap = {}
         sql, map = rewrite_sql([sql], table_remap)
         self.assertEqual("""SELECT * FROM remap WHERE frm = 'y';""", sql)
-        self.assertEqual({'remap': './data/remap.csv'}, map)
+        self.assertEqual({'remap': expand_path('./data/remap.csv')}, map)
 
 
     def test_rewrite_stdin_without_at(self):
@@ -59,7 +60,7 @@ class TestRewriteSql(TestCase):
         table_remap = {}
         sql, map = rewrite_sql([sql], table_remap)
         self.assertEqual("""SELECT * FROM remap WHERE frm = 'y' SELECT * FROM test1 WHERE foo = 'bar';""", sql)
-        self.assertDictEqual({'remap': './data/remap.csv', 'test1': './data/test1.csv'}, map)
+        self.assertDictEqual({'remap': expand_path('./data/remap.csv'), 'test1': expand_path('./data/test1.csv')}, map)
 
 
     def test_rewrite_db_table(self):
