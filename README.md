@@ -129,43 +129,43 @@ optional arguments:
 | Filter      | Num. Params | Syntax                             | In type  | Out type | Description                                               |
 |-------------|-------------|------------------------------------|----------|----------|-----------------------------------------------------------|
 | abs         | 0           | <column_name>\|abs                  | num      | num      | Take the absolute value of a number.                      |
-| add         | 1           | <column_name>\|add|<value>          | num      | num      | Add <value> to number.                                    |
+| add         | 1           | <column_name>\|add\|<value>          | num      | num      | Add <value> to number.                                    |
 | capitalize  | 0           | <column_name>\|capitalize           | str      | str      | Capitalize string.                                        |
 | ceil        | 0           | <column_name>\|ceil                 | num      | num      | Return the ceiling value of a number.                     |
 | datetime    | 0           | <column_name>\|datetime             | str      | datetime | Parse a datetime string.                                  |
-| datetime_tz | 1           | <column_name>\|datetime_tz|<tz>     | str      | datetime | Prase a datetime string with the specified <tz> timezone. |
+| datetime_tz | 1           | <column_name>\|datetime_tz\|<tz>     | str      | datetime | Prase a datetime string with the specified <tz> timezone. |
 | dehumanize  | 0           | <column_name>\|dehumanize           | str      | num      | Convert from human string to number.                      |
-| div         | 1           | <column_name>\|div|<value>          | num      | num      | Divide number by <value>.                                 |
+| div         | 1           | <column_name>\|div\|<value>          | num      | num      | Divide number by <value>.                                 |
 | float       | 0           | <column_name>\|float                | str      | float    | Convert to float.                                         |
 | floor       | 0           | <column_name>\|floor                | num      | num      | Return the floor value of a number.                       |
-| format      | 1           | <column_name>\|format|<format>      | str      | str      | Format data using Python's `format(<format>)` function.   |
-| humanize    | 1           | <column_name>\|humanize|<unit>      | num      | str      | Format number to human string.                            |
+| format      | 1           | <column_name>\|format\|<format>      | str      | str      | Format data using Python's `format(<format>)` function.   |
+| humanize    | 1           | <column_name>\|humanize\|<unit>      | num      | str      | Format number to human string.                            |
 | int         | 0           | <column_name>\|int                  | str      | int      | Convert to integer.                                       |
 | iso8601     | 0           | <column_name>\|iso8601              | datetime | str      | Convert a datetime to an ISO8601 string representation.   |
 | length      | 0           | <column_name>\|length               | str      | str      | Return the length of the string.                          |
-| ljust       | 1           | <column_name>\|ljust|<width>        | str      | str      | Left justify string in <width> spaces.                    |
+| ljust       | 1           | <column_name>\|ljust\|<width>        | str      | str      | Left justify string in <width> spaces.                    |
 | lower       | 0           | <column_name>\|lower                | str      | str      | Convert string to lowercase.                              |
-| mult        | 1           | <column_name>\|mult|<value>         | num      | num      | Multiply number by <value>.                               |
+| mult        | 1           | <column_name>\|mult\|<value>         | num      | num      | Multiply number by <value>.                               |
 | num         | 0           | <column_name>\|num                  | str      | num      | Convert to integer or float.                              |
 | number      | 0           | <column_name>\|number               | str      | num      | Convert to integer or float.                              |
 | ordinal     | 0           | <column_name>\|ordinal              | num      | str      | Convert number to ordinal string.                         |
-| prefix      | 1           | <column_name>\|prefix|<prefix>      | str      | str      | Prefix the string with <prefix>.                          |
-| replace     | 2           | <column_name>\|replace|<from>|<to>  | str      | str      | Replace sub-string <from> with <to>.                      |
+| prefix      | 1           | <column_name>\|prefix\|<prefix>      | str      | str      | Prefix the string with <prefix>.                          |
+| replace     | 2           | <column_name>\|replace\|<from>\|<to>  | str      | str      | Replace sub-string <from> with <to>.                      |
 | reverse     | 0           | <column_name>\|reverse              | str      | str      | Reverse the characters in the string.                     |
-| rjust       | 1           | <column_name>\|rjust|<width>        | str      | str      | Right justify string in <width> spaces.                   |
-| round       | 1           | <column_name>\|round|<digits>       | num      | num      | Round number to <digits> digits.                          |
+| rjust       | 1           | <column_name>\|rjust\|<width>        | str      | str      | Right justify string in <width> spaces.                   |
+| round       | 1           | <column_name>\|round\|<digits>       | num      | num      | Round number to <digits> digits.                          |
 | str         | 0           | <column_name>\|str                  | any      | str      | Convert to string.                                        |
-| strftime    | 1           | <column_name>\|strftime|<format>    | datetime | str      | Format a datetime using `strftime(<format>)`.             |
-| sub         | 1           | <column_name>\|sub|<value>          | num      | num      | Subtract <value> from number.                             |
-| substr      | 2           | <column_name>\|substr|<start>|<end> | str      | str      | Return a sub-string.                                      |
-| suffix      | 1           | <column_name>\|suffix|<suffix>      | str      | str      | Suffix the string with <suffix>.                          |
+| strftime    | 1           | <column_name>\|strftime\|<format>    | datetime | str      | Format a datetime using `strftime(<format>)`.             |
+| sub         | 1           | <column_name>\|sub\|<value>          | num      | num      | Subtract <value> from number.                             |
+| substr      | 2           | <column_name>\|substr\|<start>\|<end> | str      | str      | Return a sub-string.                                      |
+| suffix      | 1           | <column_name>\|suffix\|<suffix>      | str      | str      | Suffix the string with <suffix>.                          |
 | swapcase    | 0           | <column_name>\|swapcase             | str      | str      | Swap string case.                                         |
 | title       | 0           | <column_name>\|title                | str      | str      | Convert string to title case.                             |
 | trunc       | 0           | <column_name>\|trunc                | num      | num      | Return the number truncated.                              |
-| tz          | 1           | <column_name>\|tz|<tz>              | datetime | datetime | Convert a datetime to a new <tz> timezone.                |
+| tz          | 1           | <column_name>\|tz\|<tz>              | datetime | datetime | Convert a datetime to a new <tz> timezone.                |
 | upper       | 0           | <column_name>\|upper                | str      | str      | Convert string to uppercase.                              |
 | utc         | 0           | <column_name>\|utc                  | datetime | datetime | Convert a datetime to UTC.                                |
-| zfill       | 1           | <column_name>\|zfill|<width>        | str      | str      | Zero fill string to <width> size.                         |
+| zfill       | 1           | <column_name>\|zfill\|<width>        | str      | str      | Zero fill string to <width> size.                         |
 
 Notes: 
 
