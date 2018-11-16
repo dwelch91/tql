@@ -5,8 +5,8 @@ from qq.__main__ import main
 
 class TestSimple(TestCase):
 
-    def test_load_1(self):
-        main(args=['-g'])
+    # def test_1(self):
+    #     main(args=['-g'])
 
 
     def test_skip_lines(self):
@@ -47,6 +47,17 @@ class TestSimple(TestCase):
                    '-m', 'from=frm',  # re-map column name
                    '-m', 'to=too',  # re-map column name
                    ])
+
+    def test_remap_col_double_quotes(self):
+        main(args=["""SELECT * FROM "./data/remap.csv" WHERE frm = 'y';""",
+                   '-g',
+                   '-m', 'group=grp',  # re-map column name
+                   '-m', 'from=frm',  # re-map column name
+                   '-m', 'to=too',  # re-map column name
+                   ])
+
+        # TODO: Fails!!!!
+
 
 
     def test_help(self):

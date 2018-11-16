@@ -1,11 +1,18 @@
 import csv
+import sqlite3
 import sys
 
 from prettytable import PrettyTable
 
+from qq.exceptions import DatabaseError
+
 
 def do_output(sql, cur, output, output_format, delimiter):
-    result = cur.execute(sql)
+    try:
+        result = cur.execute(sql)
+    except sqlite3.OperationalError as e:
+        raise DatabaseError("Database error: {e}")
+
     column_names = [x[0] for x in cur.description]
 
     if output == '-':  # stdout

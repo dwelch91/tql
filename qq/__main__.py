@@ -12,9 +12,9 @@ from qq.utils import error
 DEBUG = False
 
 
-def debug(s):
+def debug(s, title=None):
     if DEBUG:
-        sys.stderr.write(f"{s}\n")
+        sys.stderr.write(f"{title or ''}{s!r}\n")
 
 
 def main(args=None):
@@ -66,7 +66,7 @@ def main(args=None):
 
     args = parser.parse_args(args=args)
     DEBUG = args.debug
-    debug(args)
+    debug(args, 'args=')
 
     if args.filter_list:
         print_filter_list_table()
@@ -77,20 +77,20 @@ def main(args=None):
 
     # Process table re-mappings, if any
     table_remapping = process_table_remapping(args.remap_table)
-    debug(table_remapping)
+    debug(table_remapping, 'table_remapping=')
 
     # Re-write the SQL, replacing filenames with table names and apply table re-mapping(s)
     sql, tables = rewrite_sql(args.sql, table_remapping)
-    debug(sql)
-    debug(tables)
+    debug(sql, 'sql=')
+    debug(tables, 'tables=')
 
     # Pre-process the filters
     filters = preprocess_filters(args.filter)
-    debug(filters)
+    debug(filters, 'filters=')
 
     # Process the column re-mappings, if any
     column_remapping = process_column_remapping(args.remap_column)
-    debug(column_remapping)
+    debug(column_remapping, 'column_remapping=')
 
     # TODO: Allow for database "re-use" - open an existing database file and use other tables in it for JOINs, etc along with the CSV input table(s)
     # TODO: --load-db <database name>
@@ -112,28 +112,35 @@ def main(args=None):
             first, colnames = True, []
 
             for row in reader:
+                debug(row)
                 row = [n.strip() for n in row if n]
 
                 if first:
                     placeholders = ', '.join(['?'] * len(row))
                     col_src = args.headers.split(',') if args.headers else row
                     colnames = [column_remapping.get(n.strip()) or n.strip() for n in col_src]
+                    debug(colnames, 'colnames=')
                     colnames_str = ','.join(colnames)
 
                     s = f"CREATE TABLE {tablename} ({colnames_str});"
-                    debug(s)
-                    cur.execute(s)
+                    debug(s, 'table create: ')
+                    try:
+                        cur.execute(s)
+                    except sqlite3.OperationalError as e:
+                        raise Error("Failed to create table. Most likely cause is missing headers. "
+                                    "Use --headers/-r and/or --skip-lines/-k to setup headers.")
+
                     first = False
                     continue
 
                 filtered_row = apply_filters(filters, colnames, row)
-                debug(row)
+                debug(row, 'row=')
                 s = f"INSERT INTO {tablename} ({colnames_str}) VALUES ({placeholders});"
                 cur.execute(s, filtered_row)
 
     con.commit()
 
-    debug(sql)
+    debug(sql, 'sql=')
     do_output(sql, cur, args.output, args.output_format, args.delimiter)
     con.close()
     return 0

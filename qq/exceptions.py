@@ -8,3 +8,7 @@ class Error(Exception):
 
 class FilterError(Error):
     pass
+
+
+class DatabaseError(Error):
+    pass
