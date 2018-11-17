@@ -1,4 +1,3 @@
-import os
 import sys
 import argparse
 import csv
@@ -9,6 +8,7 @@ from pytablewriter import TableWriterFactory
 from tql.exceptions import Error
 from tql.filters import print_filter_list_table, preprocess_filters, apply_filters
 from tql.output import do_output
+from tql.replacements import print_replacements_table
 from tql.sql import rewrite_sql, process_table_remapping, process_column_remapping
 from tql.utils import error, expand_path_and_exists
 
@@ -51,7 +51,8 @@ def main(args=None):
                              "Format is <column_name>|filter|<0 or more params or additional filters in filter chain>.  "
                              "Filters have a variable number of parameters (0+). Filters may be chained.")
     parser.add_argument('--auto-filter', '-a', action='store_true', help="Automatically apply the `num` filter to all column data.")
-    parser.add_argument('--filter-list', '--help-filters', action='store_true')
+    parser.add_argument('--filters-list', '--filter-list', '--help-filters', action='store_true')
+    parser.add_argument('--replacements-list', '--replacement-list', '--help-replacements', action='store_true')
     parser.add_argument('--remap-column', '--remap-header', '-m', action='append',
                         help="A single column re-map in the form <col_name>=<new_col_name>. Use one switch for each column re-mapping. "
                              "This overrides any column/header names that are auto-discovered or passed in via --headers/-r. "
@@ -75,8 +76,12 @@ def main(args=None):
     DEBUG = args.debug
     debug(args, 'args=')
 
-    if args.filter_list:
-        print_filter_list_table()
+    if args.filters_list:
+        print_filter_list_table(args.output_format)
+        return 0
+
+    if args.replacements_list:
+        print_replacements_table(args.output_format)
         return 0
 
     if not args.sql:

@@ -1,5 +1,5 @@
 # from prettytable import PrettyTable
-
+from tql.output import print_simple_output
 
 REPLACEMENTS = [
     ('[:space:]', ' ', "Space ( )"),
@@ -32,10 +32,8 @@ def apply_char_replacements(s):
     return s
 
 
-def print_replacements_table():
-    # table = PrettyTable(('Sequence', 'Description'))
-    # table.align = 'l'
-    # for seq, _, desc in REPLACEMENTS:
-    #     table.add_row((seq, desc))
-    # print(table)
-    pass
+def print_replacements_table(fmt='table'):
+    table_data = []
+    for seq, _, desc in REPLACEMENTS:
+        table_data.append([seq, desc])
+    print_simple_output(table_data, ('Sequence', 'Description'), fmt, "Replacements List")

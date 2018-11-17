@@ -7,6 +7,7 @@ from pytablewriter import TableWriterFactory
 
 from tql.exceptions import FilterError
 # from tql.output import get_table_writer
+from tql.output import print_simple_output
 from tql.utils import to_num, to_int, to_float, humanize, dehumanize, ordinal
 from tql.replacements import apply_char_replacements, print_replacements_table
 
@@ -31,6 +32,7 @@ FILTERS = {
     'capitalize': (lambda s: s.capitalize(), 0, "<column_name>|capitalize", "str", "str", "Capitalize string."),
     'ljust': (lambda s, w: s.ljust(to_int(w)), 1, "<column_name>|ljust|<width>", "str", "str", "Left justify string in <width> spaces."),
     'rjust': (lambda s, w: s.rjust(to_int(w)), 1, "<column_name>|rjust|<width>", "str", "str", "Right justify string in <width> spaces."),
+    'center': (lambda s, w: s.center(to_int(w), ' '), 1, "<column_name>|center|<width>", "str", "str", "Center string in <width> spaces."),
     'swapcase': (lambda s: s.swapcase(s), 0, "<column_name>|swapcase", "str", "str", "Swap string case."),
     'replace': (lambda s, x, y: s.replace(x, y), 2, "<column_name>|replace|<from>|<to>", "str", "str", "Replace sub-string <from> with <to>."),
     'title': (lambda s: s.title(), 0, "<column_name>|title", "str", "str", "Convert string to title case."),
@@ -40,11 +42,16 @@ FILTERS = {
     'prefix': (lambda s, p: ''.join([p, s]), 1, "<column_name>|prefix|<prefix>", "str", "str", "Prefix the string with <prefix>."),
     'suffix': (lambda s, x: ''.join([s, x]), 1, "<column_name>|suffix|<suffix>", "str", "str", "Suffix the string with <suffix>."),
     'substr': (lambda s, x, y: s[x:y], 2, "<column_name>|substr|<start>|<end>", "str", "str", "Return a sub-string."),
+    'lstrip': (lambda s, c: s.lstrip(c), 1, "<column_name>|lstrip|<chars>", "str", "str", "Strip <chars> from the left end of the string."),
+    'rstrip': (lambda s, c: s.rstrip(c), 1, "<column_name>|rstrip|<chars>", "str", "str", "Strip <chars> from the right end of the string."),
     # TODO: regex
 
     # Data formatting
-    'format': (lambda x, fmt: format(x, fmt), 1, "<column_name>|format|<format>", "str", "str", "Format data using Python's `format(<format>)` function."),
-    # TODO: locale
+    'format': (lambda x, fmt: format(to_num(x), fmt), 1, "<column_name>|format|<format>", "str", "str", "Format data using Python's `format(<format>)` function."),
+    # TODO: locale:
+    #'format_currency': (),
+    #'format_number': (),
+    'thousands': (lambda n: f"{to_num(n):,}", 0, "<column_name>|thousands", "num", "str", "Format number with thousands separators."),
 
     # (Simple) maths (intermediate values are numbers and inputs are auto converted to numbers)
     'add': (lambda s, o: to_num(s) + to_num(o), 1, "<column_name>|add|<value>", "num", "num", "Add <value> to number."),
@@ -64,7 +71,6 @@ FILTERS = {
     'iso8601': (lambda dt: dt.to_iso8601_string(), 0, "<column_name>|iso8601", "datetime", "str", "Convert a datetime to an ISO8601 string representation."),
     'utc': (lambda dt: pendulum.timezone('UTC').convert(dt), 0, "<column_name>|utc", "datetime", "datetime", "Convert a datetime to UTC."),
     'strftime': (lambda dt, fmt: dt.strftime(fmt), 1, "<column_name>|strftime|<format>", "datetime", "str", "Format a datetime using `strftime(<format>)`."),
-
 }
 
 
@@ -93,21 +99,16 @@ def print_filter_list_table(fmt='md'):
     Print out a nice table of filters w/docs
     :return:
     """
-    table = TableWriterFactory.create_from_format_name(fmt)
-    # table.table_name = "Filter List Table"
-    table.header_list = ('Filter', 'Num. Params', 'Syntax**', 'In type*', 'Out type', 'Description')
     table_data = []
     for func_name in sorted(FILTERS.keys()):
         values = FILTERS[func_name]
         table_data.append([func_name] + list(values[1:]))
-    table.value_matrix = table_data
-    table.write_table()
-    # print(table)
+
+    print_simple_output(table_data, ('Filter', 'Num. Params', 'Syntax**', 'In type*', 'Out type', 'Description'), fmt, "Filter List")
+
     print("* Most filters that take numeric inputs will automatically apply the `num` filter to the column data prior to filtering.\n"
           "  Filters can be chained together using the pipe (|) character. For example, `c1|num|add|1|human`\n"
           "  The type of the data after the last filter has run will be the type that is added to the database.\n")
-    print("""** To represent special characters in filters, you can use these replacement sequences:""")
-    print_replacements_table()
 
 
 def apply_filters(filters, colnames, row):

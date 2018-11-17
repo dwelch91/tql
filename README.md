@@ -15,12 +15,11 @@ Inspired by the`q` tool (https://harelba.github.io/q/)...
 
 ### Planned Features
 * Input from stdin
-* Modification queries (TBD)
 * Regex-based filters
 * Locale based filters
 * Encodings support
 * CSV column merging and splitting
-* Github Flavored Markdown table output format support
+* Modification queries (TBD)
 * Callable API
 
 ### Installation
@@ -132,6 +131,7 @@ optional arguments:
 | add         | 1           | <column_name>\|add\|\<value\>          | num      | num      | Add \<value\> to number.                                    |
 | capitalize  | 0           | <column_name>\|capitalize           | str      | str      | Capitalize string.                                        |
 | ceil        | 0           | <column_name>\|ceil                 | num      | num      | Return the ceiling value of a number.                     |
+| center      | 1           | <column_name>\|center|\<width\>     | str      | str      | Center string in width of \<width\> spaces.               |
 | datetime    | 0           | <column_name>\|datetime             | str      | datetime | Parse a datetime string.                                  |
 | datetime_tz | 1           | <column_name>\|datetime_tz\|\<tz\>     | str      | datetime | Prase a datetime string with the specified \<tz\> timezone. |
 | dehumanize  | 0           | <column_name>\|dehumanize           | str      | num      | Convert from human string to number.                      |
@@ -144,6 +144,7 @@ optional arguments:
 | iso8601     | 0           | <column_name>\|iso8601              | datetime | str      | Convert a datetime to an ISO8601 string representation.   |
 | length      | 0           | <column_name>\|length               | str      | str      | Return the length of the string.                          |
 | ljust       | 1           | <column_name>\|ljust\|\<width\>        | str      | str      | Left justify string in \<width\> spaces.                    |
+| lstrip      | 1           | <column_name>\|lstrip\|\<chars\>        | str      | str      | Remove characters from left.                     |
 | lower       | 0           | <column_name>\|lower                | str      | str      | Convert string to lowercase.                              |
 | mult        | 1           | <column_name>\|mult\|\<value\>         | num      | num      | Multiply number by \<value\>.                               |
 | num         | 0           | <column_name>\|num                  | str      | num      | Convert to integer or float.                              |
@@ -153,6 +154,7 @@ optional arguments:
 | replace     | 2           | <column_name>\|replace\|\<from\>\|\<to\>  | str      | str      | Replace sub-string \<from\> with \<to\>.                      |
 | reverse     | 0           | <column_name>\|reverse              | str      | str      | Reverse the characters in the string.                     |
 | rjust       | 1           | <column_name>\|rjust\|\<width\>        | str      | str      | Right justify string in \<width\> spaces.                   |
+| rstrip      | 1           | <column_name>\|rstrip\|\<chars\>        | str      | str      | Remove characters from right.                   |
 | round       | 1           | <column_name>\|round\|\<digits\>       | num      | num      | Round number to \<digits\> digits.                          |
 | str         | 0           | <column_name>\|str                  | any      | str      | Convert to string.                                        |
 | strftime    | 1           | <column_name>\|strftime\|\<format\>    | datetime | str      | Format a datetime using `strftime(\<format\>)`.             |
@@ -160,6 +162,7 @@ optional arguments:
 | substr      | 2           | <column_name>\|substr\|\<start\>\|\<end\> | str      | str      | Return a sub-string.                                      |
 | suffix      | 1           | <column_name>\|suffix\|\<suffix\>      | str      | str      | Suffix the string with \<suffix\>.                          |
 | swapcase    | 0           | <column_name>\|swapcase             | str      | str      | Swap string case.                                         |
+| thousands   | 0           | <column_name>\|thousands            | num      | str      | Format number with thousands separators.                  |
 | title       | 0           | <column_name>\|title                | str      | str      | Convert string to title case.                             |
 | trunc       | 0           | <column_name>\|trunc                | num      | num      | Return the number truncated.                              |
 | tz          | 1           | <column_name>\|tz\|\<tz\>              | datetime | datetime | Convert a datetime to a new \<tz\> timezone.                |

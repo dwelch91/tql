@@ -25,7 +25,7 @@ class TestSimple(TestCase):
 
 
     def test_data_csv(self):
-        main(args=["SELECT * FROM @'./data/data.csv' WHERE count != 15;",
+        main(args=["SELECT * FROM @'./data/data.csv' WHERE a_volts_min < 220;",
                    #'-g',
                    '-e', 'mac_address|lower',
                    '-e', 'count|int',
@@ -36,6 +36,15 @@ class TestSimple(TestCase):
                    '-f', 'table',
                    #'-s', 'output.db'
                    ])
+
+
+    def test_formatting(self):
+        main(args=["SELECT * FROM @'./data/test1.csv';",
+                   '-e', 'foo|thousands',
+                   '-e', 'yyy|num|format|08,.1f',
+                   '-e', 'bar|num|format|08,d',
+                    ])
+
 
     def test_remap_col(self):
         main(args=["SELECT * FROM @'./data/remap.csv' WHERE frm = 'y';",
@@ -54,16 +63,18 @@ class TestSimple(TestCase):
                    '-f', 'pandas'
                    ])
 
-        # TODO: Fails!!!!
-
 
     @skip
     def test_help(self):
         main(args=['--help'])
 
 
-    def test_filter_list(self):
-        main(args=['--filter-list'])
+    def test_filters_list(self):
+        main(args=['--filters-list'])
+
+
+    def test_replacements_list(self):
+        main(args=['--replacements-list', '-f', 'md'])
 
 
     def test_auto_filters(self):
