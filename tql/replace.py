@@ -1,5 +1,5 @@
 # from prettytable import PrettyTable
-from tql.output import print_simple_output
+from tql.out import print_simple_output
 
 REPLACEMENTS = [
     ('[:space:]', ' ', "Space ( )"),

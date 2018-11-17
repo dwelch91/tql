@@ -7,9 +7,9 @@ from pytablewriter import TableWriterFactory
 
 from tql.exceptions import FilterError
 # from tql.output import get_table_writer
-from tql.output import print_simple_output
+from tql.out import print_simple_output
 from tql.utils import to_num, to_int, to_float, humanize, dehumanize, ordinal
-from tql.replacements import apply_char_replacements, print_replacements_table
+from tql.replace import apply_char_replacements, print_replacements_table
 
 
 FILTERS = {
@@ -94,7 +94,7 @@ def preprocess_filters(filter_args):
     return filters
 
 
-def print_filter_list_table(fmt='md'):
+def print_filter_list_table(fmt='table'):
     """
     Print out a nice table of filters w/docs
     :return:

@@ -2,7 +2,7 @@ import os
 import re
 
 from tql.exceptions import Error
-from tql.replacements import apply_char_replacements
+from tql.replace import apply_char_replacements
 from tql.utils import expand_path_and_exists
 
 FROM_PATTERN = re.compile(r"""FROM\s+@([\'\"])(?!\1)(.+?)\1|FROM\s+@([^\'\"\s]+)|FROM\s+(-)\s+""", re.I)
