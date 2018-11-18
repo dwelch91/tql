@@ -67,7 +67,7 @@ FILTERS = {
     'mult': (lambda s, o: to_num(s) * to_num(o), 1, "<col>|mult:<value>", "num", "num", "Multiply number by <value>."),
     'div': (lambda s, o: to_num(s) / to_num(o), 1, "<col>|div:<value>", "num", "num", "Divide number by <value>."),
     'abs': (lambda x: abs(to_num(x)), 0, "<col>|abs", "num", "num", "Take the absolute value of a number."),
-    'round': (lambda x, d: round(to_num(x), to_int(d)), 1, "<col>|round|<digits>", "num", "num",
+    'round': (lambda x, d: round(to_num(x), to_int(d)), 1, "<col>|round:<digits>", "num", "num",
               "Round number to <digits> digits."),
     'ceil': (lambda x: ceil(to_num(x)), 0, "<col>|ceil", "num", "num", "Return the ceiling value of a number."),
     'floor': (lambda x: floor(to_num(x)), 0, "<col>|floor", "num", "num", "Return the floor value of a number."),

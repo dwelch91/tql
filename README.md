@@ -19,8 +19,6 @@ Inspired by the`q` tool (https://harelba.github.io/q/)...
 * Locale based filters
 * Encodings support
 * CSV column merging and splitting
-* Modification queries (TBD)
-* Callable API
 
 ### Installation
 
@@ -45,53 +43,56 @@ Example:
 
 ```
 usage: tql [-h] [--skip-lines SKIP_LINES]
-           [--input-dialect {excel,excel-tab,unix}]
+           [--input-dialect {excel, excel-tab, unix}]
            [--input-delimiter INPUT_DELIMITER]
            [--input-quotechar INPUT_QUOTECHAR] [--headers HEADERS]
            [--filter FILTER] [--auto-filter] [--remap-column REMAP_COLUMN]
            [--remap-table REMAP_TABLE] [--save-db SAVE_DB | --load-db LOAD_DB]
            [--output OUTPUT]
-           [--output-format {csv,elasticsearch,excel,htm,html,javascript,js,json,json_lines,jsonl,latex_matrix,latex_table,ldjson,ltsv,markdown,md,mediawiki,ndjson,null,numpy,pandas,py,python,rst,rst_csv,rst_csv_table,rst_grid,rst_grid_table,rst_simple,rst_simple_table,space_aligned,sqlite,toml,tsv,table,ptable,pt}]
+           [--output-format {csv, elasticsearch, excel, htm, html, javascript,
+           js, json, json_lines, jsonl, latex_matrix, latex_table, ldjson, ltsv, markdown,
+           md, mediawiki, ndjson, null, numpy, pandas, py, python, rst, rst_csv,
+           rst_csv_table, rst_grid, rst_grid_table, rst_simple, rst_simple_table,
+           space_aligned, sqlite, toml, tsv, table, ptable, pt}]
            [--output-delimiter OUTPUT_DELIMITER]
            [--output-quotechar OUTPUT_QUOTECHAR] [--debug] [--filters-list]
            [--replacements-list]
            [sql [sql ...]]
-
 positional arguments:
   sql                   The SQL to execute. Use filenames surrounded by single
                         or double quotes to specify CSV sources instead of
                         existing tables in the FROM clause(s). You can use
                         [:...:] replacements for special characters (see
                         --help-filters for more information.
-
 optional arguments:
-  -h, --help            show this help message and exit
-  --skip-lines SKIP_LINES, --skip SKIP_LINES, -k SKIP_LINES
+  -h,  --help            show this help message and exit
+  --skip-lines SKIP_LINES,  --skip SKIP_LINES,  -k SKIP_LINES
                         Skip `SKIP_LINES` lines at the beginning of the file.
                         Default is 0.
-  --input-dialect {excel,excel-tab,unix}, -t {excel,excel-tab,unix}
-                        Specify the CSV dialect. Valid values are excel,
-                        excel-tab, unix. Default is `unix`.
-  --input-delimiter INPUT_DELIMITER, -d INPUT_DELIMITER
+  --input-dialect {excel, excel-tab, unix},  -t {excel, excel-tab, unix}
+                        Specify the CSV dialect. Valid values are excel, 
+                        excel-tab,  unix. Default is `unix`.
+  --input-delimiter INPUT_DELIMITER,  -d INPUT_DELIMITER
                         Specify the CSV delimiter to use. Default is a comma
-                        (,).
-  --input-quotechar INPUT_QUOTECHAR, --quote-char INPUT_QUOTECHAR, -q INPUT_QUOTECHAR
+                        (, ).
+  --input-quotechar INPUT_QUOTECHAR,  --quote-char INPUT_QUOTECHAR,  -q
+                        INPUT_QUOTECHAR
                         Specify the CSV quote charactor. Default is double
                         quote (").
-  --headers HEADERS, -r HEADERS
+  --headers HEADERS,  -r HEADERS
                         Don't use the first non-skipped line for header/column
-                        names, use these header/column names instead. Format
+                        names,  use these header/column names instead. Format
                         is a comma separated list of column names. Column
                         names must not be SQLite reserved words.
-  --filter FILTER, -e FILTER
+  --filter FILTER,  -e FILTER
                         Specify a column filter. Use one filter per
                         switch/param. Format is <column_name>|filter|<0 or
                         more params or additional filters in filter chain>.
                         Filters have a variable number of parameters (0+).
                         Filters may be chained.
-  --auto-filter, -a     Automatically apply the `num` filter to all column
+  --auto-filter,  -a     Automatically apply the `num` filter to all column
                         data.
-  --remap-column REMAP_COLUMN, --remap-header REMAP_COLUMN, -m REMAP_COLUMN
+  --remap-column REMAP_COLUMN,  --remap-header REMAP_COLUMN,  -m REMAP_COLUMN
                         A single column re-map in the form
                         <col_name>=<new_col_name>. Use one switch for each
                         column re-mapping. This overrides any column/header
@@ -99,7 +100,7 @@ optional arguments:
                         --headers/-r. You can use [:...:] replacements for
                         special characters (see --help-filters for more
                         information.
-  --remap-table REMAP_TABLE, --remap-file REMAP_TABLE, -T REMAP_TABLE
+  --remap-table REMAP_TABLE,  --remap-file REMAP_TABLE,  -T REMAP_TABLE
                         A single table re-map in the form
                         <table_name>=<new_table_name>. Use one switch for each
                         table re-mapping. This overrides any table names that
@@ -107,28 +108,44 @@ optional arguments:
                         SQL statement. You can use [:...:] replacements for
                         special characters (see --help-filters for more
                         information.
-  --save-db SAVE_DB, -s SAVE_DB
+  --save-db SAVE_DB,  -s SAVE_DB
                         Specify a SQLite database to use (instead of using an
                         in-memory database. The database will remain after tql
                         exits.
-  --load-db LOAD_DB, -l LOAD_DB
+  --load-db LOAD_DB,  -l LOAD_DB
                         Load an existing database instead of creating a new
                         one.
-  --output OUTPUT, -o OUTPUT
+  --output OUTPUT,  -o OUTPUT
                         Output file. Default is stdout (-).
-  --output-format {csv,elasticsearch,excel,htm,html,javascript,js,json,json_lines,jsonl,latex_matrix,latex_table,ldjson,ltsv,markdown,md,mediawiki,ndjson,null,numpy,pandas,py,python,rst,rst_csv,rst_csv_table,rst_grid,rst_grid_table,rst_simple,rst_simple_table,space_aligned,sqlite,toml,tsv,table,ptable,pt}, --out-format {csv,elasticsearch,excel,htm,html,javascript,js,json,json_lines,jsonl,latex_matrix,latex_table,ldjson,ltsv,markdown,md,mediawiki,ndjson,null,numpy,pandas,py,python,rst,rst_csv,rst_csv_table,rst_grid,rst_grid_table,rst_simple,rst_simple_table,space_aligned,sqlite,toml,tsv,table,ptable,pt}, --out-fmt {csv,elasticsearch,excel,htm,html,javascript,js,json,json_lines,jsonl,latex_matrix,latex_table,ldjson,ltsv,markdown,md,mediawiki,ndjson,null,numpy,pandas,py,python,rst,rst_csv,rst_csv_table,rst_grid,rst_grid_table,rst_simple,rst_simple_table,space_aligned,sqlite,toml,tsv,table,ptable,pt}, -f {csv,elasticsearch,excel,htm,html,javascript,js,json,json_lines,jsonl,latex_matrix,latex_table,ldjson,ltsv,markdown,md,mediawiki,ndjson,null,numpy,pandas,py,python,rst,rst_csv,rst_csv_table,rst_grid,rst_grid_table,rst_simple,rst_simple_table,space_aligned,sqlite,toml,tsv,table,ptable,pt}
+  --output-format {csv, elasticsearch, excel, htm, html, javascript, js, json,
+                        json_lines, jsonl, latex_matrix, latex_table, ldjson, ltsv, markdown, md,
+                        mediawiki, ndjson, null, numpy, pandas, py, python, rst, rst_csv, rst_csv_table,
+                        rst_grid, rst_grid_table, rst_simple, rst_simple_table, space_aligned, sqlite,
+                        toml, tsv, table, ptable, pt},  --out-format {csv, elasticsearch, excel, htm,
+                        html, javascript, js, json, json_lines, jsonl, latex_matrix, latex_table,
+                        ldjson, ltsv, markdown, md, mediawiki, ndjson, null, numpy, pandas, py, python,
+                        rst, rst_csv, rst_csv_table, rst_grid, rst_grid_table, rst_simple,
+                        rst_simple_table, space_aligned, sqlite, toml, tsv, table, ptable, pt},  --out-
+                        fmt {csv, elasticsearch, excel, htm, html, javascript, js, json, json_lines,
+                        jsonl, latex_matrix, latex_table, ldjson, ltsv, markdown, md, mediawiki, ndjson,
+                        null, numpy, pandas, py, python, rst, rst_csv, rst_csv_table, rst_grid,
+                        rst_grid_table, rst_simple, rst_simple_table, space_aligned, sqlite, toml, tsv,
+                        table, ptable, pt},  -f {csv, elasticsearch, excel, htm, html, javascript, js,
+                        json, json_lines, jsonl, latex_matrix, latex_table, ldjson, ltsv, markdown, md,
+                        mediawiki, ndjson, null, numpy, pandas, py, python, rst, rst_csv, rst_csv_table,
+                        rst_grid, rst_grid_table, rst_simple, rst_simple_table, space_aligned, sqlite,
+                        toml, tsv, table, ptable, pt}
                         Output format. Valid value are 'table' and 'csv'.
                         Default is table.
   --output-delimiter OUTPUT_DELIMITER
                         Specify the CSV delimiter to use for output. Default
-                        is a comma (,).
-  --output-quotechar OUTPUT_QUOTECHAR, --output-quote-char OUTPUT_QUOTECHAR
+                        is a comma (, ).
+  --output-quotechar OUTPUT_QUOTECHAR,  --output-quote-char OUTPUT_QUOTECHAR
                         Specify the CSV quote character for output. Default is
                         double quote (").
-  --debug, -g           Turn on debug output.
-  --filters-list, --filter-list, --help-filters
-  --replacements-list, --replacement-list, --help-replacements
-
+  --debug,  -g           Turn on debug output.
+  --filters-list,  --filter-list,  --help-filters
+  --replacements-list,  --replacement-list,  --help-replacements
 ```
 
 #### Data Filtering
@@ -166,7 +183,7 @@ optional arguments:
 |`replace`    |          2|`<col>\|replace:<from>,<to>` |`str`     |`str`     |Replace sub-string `<from>` with `<to>`.                   |
 |`reverse`    |          0|`<col>\|reverse`             |`str`     |`str`     |Reverse the characters in the string.                      |
 |`rjust`      |          1|`<col>\|rjust:<width>`       |`str`     |`str`     |Right justify string in `<width>` spaces.                  |
-|`round`      |          1|`<col>\|round\|<digits>`      |`num`     |`num`     |Round number to `<digits>` digits.                         |
+|`round`      |          1|`<col>\|round:<digits>`      |`num`     |`num`     |Round number to `<digits>` digits.                         |
 |`rstrip`     |          1|`<col>\|rstrip:<chars>`      |`str`     |`str`     |Strip `<chars>` from the right end of the string.          |
 |`squotes`    |          0|`<col>\|squote`              |`str`     |`str`     |Wrap a string in single quotes.                            |
 |`str`        |          0|`<col>\|str`                 |`any`     |`str`     |Convert to string.                                         |
