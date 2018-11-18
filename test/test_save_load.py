@@ -17,12 +17,12 @@ class TestSaveLoad(TestCase):
                    '-T', 'ls=dirlist',  # re-map table name
                    '-m', 'owner=RENWO',  # re-map column
                    '-e', 'size|dehumanize',  # filter
-                   '-e', 'links|mult|10000|add|1|humanize|U',  # filter
-                   '-e', 'RENWO|upper|ljust|20|reverse',  # filter
+                   '-e', 'links|mult:10000|add:1|humanize:U',  # filter
+                   '-e', 'RENWO|upper|ljust:20|reverse',  # filter
                    '-e', 'day|ordinal',  # filter
-                   '-e', 'perms|replace|-|[:pipe:]',  # filter
-                   '-e', 'grp|suffix|!',  # filter
-                   '-e', 'filename|prefix|~/[:space:]foo[:pipe:]/[:backslash:]|suffix|[:pipe:]',  # filter
+                   '-e', 'perms|replace:-,[:pipe:]',  # filter
+                   '-e', 'grp|suffix:!',  # filter
+                   '-e', 'filename|prefix:~/[:space:]foo[:pipe:]/[:backslash:]|suffix:[:pipe:]',  # filter
                    '-s', './test.db'
                    ])
 

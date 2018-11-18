@@ -1,5 +1,137 @@
 [[package]]
 category = "main"
+description = "Screen-scraping library"
+name = "beautifulsoup4"
+optional = false
+python-versions = "*"
+version = "4.6.3"
+
+[[package]]
+category = "main"
+description = "Python package for providing Mozilla's CA Bundle."
+name = "certifi"
+optional = false
+python-versions = "*"
+version = "2018.10.15"
+
+[[package]]
+category = "main"
+description = "Universal encoding detector for Python 2 and 3"
+name = "chardet"
+optional = false
+python-versions = "*"
+version = "3.0.4"
+
+[[package]]
+category = "main"
+description = "Python library for extract property from data."
+name = "dataproperty"
+optional = false
+python-versions = ">=2.7,!=3.0.*,!=3.1.*,!=3.2.*"
+version = "0.35.2"
+
+[package.dependencies]
+logbook = ">=1.0.1"
+mbstrdecoder = ">=0.5.0"
+setuptools = ">=38.3.0"
+typepy = ">=0.3.0"
+
+[[package]]
+category = "main"
+description = "Dominate is a Python library for creating and manipulating HTML documents using an elegant DOM API."
+name = "dominate"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
+version = "2.3.4"
+
+[[package]]
+category = "main"
+description = "Internationalized Domain Names in Applications (IDNA)"
+name = "idna"
+optional = false
+python-versions = "*"
+version = "2.7"
+
+[[package]]
+category = "main"
+description = "Read metadata from Python packages"
+name = "importlib-metadata"
+optional = false
+python-versions = ">=2.7,!=3.0,!=3.1,!=3.2,!=3.3"
+version = "0.6"
+
+[[package]]
+category = "main"
+description = "An implementation of JSON Schema validation for Python"
+name = "jsonschema"
+optional = false
+python-versions = "*"
+version = "2.6.0"
+
+[[package]]
+category = "main"
+description = "A logging replacement for Python"
+name = "logbook"
+optional = false
+python-versions = "*"
+version = "1.4.1"
+
+[[package]]
+category = "main"
+description = "A fast and complete Python implementation of Markdown"
+name = "markdown2"
+optional = false
+python-versions = "*"
+version = "2.3.6"
+
+[[package]]
+category = "main"
+description = "multi-byte character string decoder"
+name = "mbstrdecoder"
+optional = false
+python-versions = ">=2.7,!=3.0.*,!=3.1.*,!=3.2.*"
+version = "0.5.0"
+
+[package.dependencies]
+chardet = ">=3.0.4"
+setuptools = ">=38.3.0"
+six = ">=1.11.0"
+
+[[package]]
+category = "main"
+description = "msgfy is a Python library for convert Exception instance to a human-readable error message."
+name = "msgfy"
+optional = false
+python-versions = ">=2.7,!=3.0.*,!=3.1.*,!=3.2.*"
+version = "0.0.4"
+
+[package.dependencies]
+setuptools = ">=38.3.0"
+
+[[package]]
+category = "main"
+description = "A module wrapper for os.path"
+name = "path.py"
+optional = false
+python-versions = ">=2.7,!=3.1,!=3.2,!=3.3"
+version = "11.5.0"
+
+[package.dependencies]
+importlib-metadata = ">=0.5"
+
+[[package]]
+category = "main"
+description = "A Python library to validate/sanitize a string such as filenames/file-paths/variable-names/excel-sheet-names."
+name = "pathvalidate"
+optional = false
+python-versions = "*"
+version = "0.21.3"
+
+[package.dependencies]
+setuptools = ">=38.3.0"
+
+[[package]]
+category = "main"
 description = "Python datetimes made easy"
 name = "pendulum"
 optional = false
@@ -20,6 +152,49 @@ version = "0.7.2"
 
 [[package]]
 category = "main"
+description = "A Python library to load structured table data from files/strings/URL with various data format: CSV / Excel / Google-Sheets / HTML / JSON / LDJSON / LTSV / Markdown / SQLite / TSV."
+name = "pytablereader"
+optional = false
+python-versions = ">=2.7,!=3.0.*,!=3.1.*,!=3.2.*"
+version = "0.22.0"
+
+[package.dependencies]
+DataProperty = ">=0.34.0"
+beautifulsoup4 = ">=4.6.3"
+jsonschema = ">=2.6.0"
+logbook = "*"
+markdown2 = ">=2.3.6"
+mbstrdecoder = ">=0.5.0"
+"path.py" = ">=10.6"
+pathvalidate = ">=0.21.3"
+requests = ">=2.19.1"
+setuptools = ">=38.3.0"
+six = "*"
+tabledata = ">=0.0.24"
+typepy = ">=0.2.4"
+
+[[package]]
+category = "main"
+description = "A Python library to write a table in various formats: CSV / Elasticsearch / HTML / JavaScript / JSON / LaTeX / LDJSON / LTSV / Markdown / MediaWiki / NumPy / Excel / Pandas / Python / reStructuredText / SQLite / TOML / TSV."
+name = "pytablewriter"
+optional = false
+python-versions = ">=2.7,!=3.0.*,!=3.1.*,!=3.2.*"
+version = "0.36.0"
+
+[package.dependencies]
+DataProperty = ">=0.35.0"
+dominate = ">=2.3.4"
+logbook = "*"
+mbstrdecoder = "*"
+msgfy = ">=0.0.4"
+pathvalidate = ">=0.21.3"
+setuptools = ">=38.3.0"
+six = "*"
+tabledata = ">=0.0.24"
+typepy = "*"
+
+[[package]]
+category = "main"
 description = "Extensions to the standard Python datetime module"
 name = "python-dateutil"
 optional = false
@@ -31,11 +206,34 @@ six = ">=1.5"
 
 [[package]]
 category = "main"
+description = "World timezone definitions, modern and historical"
+marker = "extra == \"datetime\""
+name = "pytz"
+optional = false
+python-versions = "*"
+version = "2018.7"
+
+[[package]]
+category = "main"
 description = "The Olson timezone database for Python."
 name = "pytzdata"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 version = "2018.7"
+
+[[package]]
+category = "main"
+description = "Python HTTP for Humans."
+name = "requests"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
+version = "2.20.1"
+
+[package.dependencies]
+certifi = ">=2017.4.17"
+chardet = ">=3.0.2,<3.1.0"
+idna = ">=2.5,<2.8"
+urllib3 = ">=1.21.1,<1.25"
 
 [[package]]
 category = "main"
@@ -45,13 +243,73 @@ optional = false
 python-versions = "*"
 version = "1.11.0"
 
+[[package]]
+category = "main"
+description = "A Python library to represent tabular data for pytablewriter/pytablereader/SimpleSQLite."
+name = "tabledata"
+optional = false
+python-versions = "*"
+version = "0.0.24"
+
+[package.dependencies]
+DataProperty = ">=0.34.0"
+logbook = "*"
+pathvalidate = ">=0.21.3"
+setuptools = ">=38.3.0"
+six = "*"
+typepy = "*"
+
+[[package]]
+category = "main"
+description = "A Python library for variable type checker/validator/converter at a run time."
+name = "typepy"
+optional = false
+python-versions = ">=2.7,!=3.0.*,!=3.1.*,!=3.2.*"
+version = "0.3.0"
+
+[package.dependencies]
+mbstrdecoder = ">=0.5.0"
+python-dateutil = ">=2.7.5"
+pytz = ">=2018.7"
+setuptools = ">=38.3.0"
+six = ">=1.11.0"
+
+[[package]]
+category = "main"
+description = "HTTP library with thread-safe connection pooling, file post, and more."
+name = "urllib3"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, <4"
+version = "1.24.1"
+
 [metadata]
-content-hash = "40809bf9c3f0bcf006d51e1eca7f5f51f63b76eaba3392e61bde7afa9e1fe578"
+content-hash = "98b4004d559e70273d6082cb76637c373d9bf7ebbdd0b6699b753a8b94bd7f05"
 python-versions = "^3.5"
 
 [metadata.hashes]
+beautifulsoup4 = ["194ec62a25438adcb3fdb06378b26559eda1ea8a747367d34c33cef9c7f48d57", "90f8e61121d6ae58362ce3bed8cd997efb00c914eae0ff3d363c32f9a9822d10", "f0abd31228055d698bb392a826528ea08ebb9959e6bea17c606fd9c9009db938"]
+certifi = ["339dc09518b07e2fa7eda5450740925974815557727d6bd35d319c1524a04a4c", "6d58c986d22b038c8c0df30d639f23a3e6d172a05c3583e766f4c0b785c0986a"]
+chardet = ["84ab92ed1c4d4f16916e05906b6b75a6c0fb5db821cc65e70cbd64a3e2a5eaae", "fc323ffcaeaed0e0a02bf4d117757b98aed530d9ed4531e3e15460124c106691"]
+dataproperty = ["14faceea5b80e5b9114d40ec89d63b3d5d8d11512dcfe1f17c544fc2a306327c", "a59072ee01de11ed91c0c46fac726034700c892c51fa06723b72b1fa583c429c"]
+dominate = ["59abf22fe4072a97978afece563155279b3c3d6f26cb9fbbca28d0acc318cb1b", "8dfcca2bde3937a2d03db6e55efcb0c0dea0d4ab0923dc983d794b19e9247328"]
+idna = ["156a6814fb5ac1fc6850fb002e0852d56c0c8d2531923a51032d1b70760e186e", "684a38a6f903c1d71d6d5fac066b58d7768af4de2b832e426ec79c30daa94a16"]
+importlib-metadata = ["36b02c84f9001adf65209fefdf951be8e9014a95eab9938c0779ad5670359b1c", "60b6481a72908c93ccb707abeb926fb5a15319b9e6f0b76639a718837ee12de0"]
+jsonschema = ["000e68abd33c972a5248544925a0cae7d1125f9bf6c58280d37546b946769a08", "6ff5f3180870836cae40f06fa10419f557208175f13ad7bc26caa77beb1f6e02"]
+logbook = ["2a8f9c583d7247b6f9bea7945d1d1a1bcc516b78f0e2376942201f2283191a08", "32375ce706d04a46886f9818bb953e53e0eda636552d7c0a2e482dd670fa56db", "69b461abadb1582b72eeb0db1429545d8f9fc373c3421738f31df1956ac111b2", "78008531bca8105aae4c5a03338c4627eebbe3737bd57ab7e8ba09f134609ed5", "d07e4a01cfa03cfec83ad19044d122981788c88605f4d0295d56667746ee2a74", "ef2e03f6144fa9aa64b8ff69678e2206f7d6788d630156737f6d66e1b2c1d319", "f6ee2eb8c169595a0101fc72f8a5d2585db2ec0562a856b02be19f5ccf426e46"]
+markdown2 = ["08a124043aa0ad36ba2136239547d5011a2b770278abb11a5609611e0040ea05"]
+mbstrdecoder = ["2035565977693f26e4346095556b4a0a5160829e61da62b3a0b40ed8f77c3121", "85a043b115a2db3842ef93f05e330a58dfac88b6aa402ebe4a307a26d7238f2c"]
+msgfy = ["8dbed7f1659505c06b8244ebd78e83c328cae83d5ae7347ef767a7dd1783232b", "ca39e430a2211370a76c4ac92005e2535993b18b9612f87e7567f862ba13aa46"]
+"path.py" = ["31ea790adf5f606c254599639f216234fb77d61d05b827c88ebe9b71e56266ef", "b6687a532a735a2d79a13e92bdb31cb0971abe936ea0fa78bcb47faf4372b3cb"]
+pathvalidate = ["91b106350ece8fc28572648bb1f7a6463125b96d514cf3167ade7e9b610a912a", "e185d25ac8ffc354e6d64cb5e3834b099bae7615f76b2fe9f218a93aadca3778"]
 pendulum = ["0f43d963b27e92b04047ce8352e4c277db99f20d0b513df7d0ceafe674a2f727", "14e60d26d7400980123dbb6e3f2a90b70d7c18c63742ffe5bd6d6a643f8c6ef1", "5035a4e17504814a679f138374269cc7cc514aeac7ba6d9dc020abc224f25dbc", "8c0b3d655c1e9205d4dacf42fffc929cde3b19b5fb544a7f7561e6896eb8a000", "bfc7b33ae193a204ec0bec12ad0d2d3300cd7e51d91d992da525ba3b28f0d265", "cd70b75800439794e1ad8dbfa24838845e171918df81fa98b68d0d5a6f9b8bf2", "cf535d36c063575d4752af36df928882b2e0e31541b4482c97d63752785f9fcb"]
 prettytable = ["2d5460dc9db74a32bcc8f9f67de68b2c4f4d2f01fa3bd518764c69156d9cacd9", "853c116513625c738dc3ce1aee148b5b5757a86727e67eff6502c7ca59d43c36", "a53da3b43d7a5c229b5e3ca2892ef982c46b7923b51e98f0db49956531211c4f"]
+pytablereader = ["b3ff03a967a70888bd058d42b789fa3e89c9026df6518cf8052563732489543c", "e8a89c3fdd926cef947dd21b229d6b718be1a59942bbe2020b142fc3a6fa81d9"]
+pytablewriter = ["2ce856d294634af2ad1492f5d966bcb0bf07dc7c42589a58889f70fffe2b3091", "aceb8fb8829dc80e34de010303400479440a99373b6c33430fb4f9fb89b9caa8"]
 python-dateutil = ["063df5763652e21de43de7d9e00ccf239f953a832941e37be541614732cdfc93", "88f9287c0174266bb0d8cedd395cfba9c58e87e5ad86b2ce58859bc11be3cf02"]
+pytz = ["31cb35c89bd7d333cd32c5f278fca91b523b0834369e757f4c5641ea252236ca", "8e0f8568c118d3077b46be7d654cc8167fa916092e28320cde048e54bfc9f1e6"]
 pytzdata = ["10c74b0cfc51a9269031f86ecd11096c9c6a141f5bb15a3b8a88f9979f6361e2", "279cbd9900d5da9a8f9053e60db0db7f42d9a799673744b76aaeb6b4f14abe77"]
+requests = ["65b3a120e4329e33c9889db89c80976c5272f56ea92d3e74da8a463992e3ff54", "ea881206e59f41dbd0bd445437d792e43906703fff75ca8ff43ccdb11f33f263"]
 six = ["70e8a77beed4562e7f14fe23a786b54f6296e34344c23bc42f07b15018ff98e9", "832dc0e10feb1aa2c68dcc57dbb658f1c7e65b9b61af69048abc87a2db00a0eb"]
+tabledata = ["d03de9adf8b135991d04266422be69f7b43c7758ae39a9e7f31be8ad61c76c1f", "e363c4647009fb9cdcc7003f64704f0cbf673b65298db82e80a0f3b51f89ab94"]
+typepy = ["1fc1eab33cccffb6c6ec9eecd6add0a7bf1843d61fffbb9d4bcee11c088fd4c1", "c9e561513f95eb65b45cb9a8c9c85db87a7add935ff9334c37844d50dae6ad84"]
+urllib3 = ["61bf29cada3fc2fbefad4fdf059ea4bd1b4a86d2b6d15e1c7c0b582b9752fe39", "de9529817c93f27c8ccbfead6985011db27bd0ddfcdb2d86f3f663385c6a9c22"]

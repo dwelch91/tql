@@ -97,7 +97,7 @@ def execute(sql: str,
                     if auto_filter:
                         for col in colnames:
                             if col not in filters:
-                                filters[col] = ['num']
+                                filters[col] = [['num']]
                         debug(filters, 'filters (auto)=')
 
                     debug(colnames, 'colnames=')
