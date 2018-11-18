@@ -19,10 +19,7 @@ def debug(s, title=None):
         sys.stderr.write(f"{title or ''}{s!r}\n")
 
 
-def main(args=None):
-    global DEBUG
-    if args is None:
-        args = sys.argv[1:]
+def build_args_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument('sql', nargs='*', help="The SQL to execute. "
                                                "Use filenames surrounded by single or double quotes to specify CSV sources instead of existing tables in the FROM clause(s). "
@@ -54,10 +51,12 @@ def main(args=None):
                         help="A single column re-map in the form <col_name>=<new_col_name>. Use one switch for each column re-mapping. "
                              "This overrides any column/header names that are auto-discovered or passed in via --headers/-r. "
                              "You can use [:...:] replacements for special characters (see --help-filters for more information.")
+    #parser.add_argument('--auto-remap-columns')
     parser.add_argument('--remap-table', '--remap-file', '-T', action='append',
                         help="A single table re-map in the form <table_name>=<new_table_name>. Use one switch for each table re-mapping. "
                              "This overrides any table names that are auto-generated from filenames passed in via the SQL statement. "
                              "You can use [:...:] replacements for special characters (see --help-filters for more information.")
+    #parser.add_argument('--auto-remap-tables')
 
     # Save/load database
     db_group = parser.add_mutually_exclusive_group()
@@ -78,15 +77,15 @@ def main(args=None):
     parser.add_argument('--filters-list', '--filter-list', '--help-filters', action='store_true')
     parser.add_argument('--replacements-list', '--replacement-list', '--help-replacements', action='store_true')
 
+    return parser
 
-    # TODO: Handle more CSV parser params
-    # TODO: Handle duplicate column names (in -r)
-    # TODO: Modification queries? (read CSV, apply filters, save to db, apply SQL modification(s), output new CSV)
-    # TODO: Auto filtering to number with a switch? (only for columns w/o an explicit filter with -e)
-    # IDEA: Load from markdown table?
-    # IDEA: Load from URL? Save CSV to URL?
-    # REVISIT: Maybe use a diff. character after the filter name and/or between params? c1|replace:foo,bar|lower|...
 
+def main(args=None):
+    global DEBUG
+    if args is None:
+        args = sys.argv[1:]
+
+    parser = build_args_parser()
     args = parser.parse_args(args=args)
     DEBUG = args.debug
     debug(args, 'args=')
@@ -106,11 +105,6 @@ def main(args=None):
     table_remapping = process_table_remapping(args.remap_table)
     debug(table_remapping, 'table_remapping=')
 
-    # Re-write the SQL, replacing filenames with table names and apply table re-mapping(s)
-    sql, tables = rewrite_sql(args.sql, table_remapping)
-    debug(sql, 'sql=')
-    debug(tables, 'tables=')
-
     # Pre-process the filters
     filters = preprocess_filters(args.filter)
     debug(filters, 'filters=')
@@ -119,16 +113,15 @@ def main(args=None):
     column_remapping = process_column_remapping(args.remap_column)
     debug(column_remapping, 'column_remapping=')
 
-    headers = args.headers.split(',') if args.headers else None
-
-    execute(sql,
-            tables,
-            headers=headers,
+    execute(args.sql,
+            headers=args.headers,
+            filters=filters,
             output=args.output,
             output_format=args.output_format,
             skip_lines=args.skip_lines,
             output_delimiter=',',
             column_remapping=column_remapping,
+            table_remapping=table_remapping,
             auto_filter=args.auto_filter,
             save_db=args.save_db,
             load_db=args.load_db,

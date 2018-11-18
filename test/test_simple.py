@@ -24,8 +24,8 @@ class TestSimple(TestCase):
                    ])
 
     def test_data_csv(self):
-        main(args=["SELECT * FROM @'./data/data.csv' WHERE a_volts_min < 220;",
-                   # '-g',
+        main(args=["""SELECT * FROM @'./data/data.csv' WHERE "a_volts_min" < 220;""",
+                   '-g',
                    '-e', 'mac_address|lower',
                    '-e', 'count|int',
                    '-e', 'a_volts_min|float|trunc',
@@ -49,6 +49,14 @@ class TestSimple(TestCase):
                    '-m', 'group=grp',  # re-map column name
                    '-m', 'from=frm',  # re-map column name
                    '-m', 'to=too',  # re-map column name
+                   ])
+
+    def test_remap_col_2(self):
+        main(args=["""SELECT * FROM @'./data/remap.csv' WHERE "from" = 'y';""",
+                   '-g',
+                   # '-m', 'group=grp',  # re-map column name
+                   # '-m', 'from=frm',  # re-map column name
+                   # '-m', 'to=too',  # re-map column name
                    ])
 
     def test_remap_col_double_quotes(self):

@@ -1,0 +1,117 @@
+## tql - Read, Modify, and Generate Tabular Data 
+Inspired by the`q` tool (https://harelba.github.io/q/)...
+
+### Features
+* Support for reading of CSV, TSV, HTML, JSON, LTSV, Markdown, MediaWiki, Excel, etc. formats
+* Extensive support for data pre-filtering, conversions, etc. of input data before it is added to database
+* Full support for all of SQLite features
+* Support for writing in CSV, TSV, Excel, LaTex, Markdown, JSON, rst, TOML, etc. formats
+* Create database, add data to existing database, or use in-memory database
+* Table name remapping
+* Column name remapping
+* Automatic or user specified headers/column names
+* Full Python 3.5+ support (sorry, no Python 2.x support)
+* MIT license
+
+### Planned Features
+* Input from stdin
+* Regex-based filters
+* Locale based filters
+* Encodings support
+* CSV column merging and splitting
+* Modification queries (TBD)
+* Callable API
+
+### Installation
+
+
+### Documentation
+
+#### Usage
+
+In a nutshell:
+
+`tql "<SQL>" [options]`
+
+Where the `<SQL>` is standard SQLite compatible SQL with the following modifier - when loading CSV data into a table,
+use the format `@<filename>` (for `<filename>`s w/o spaces), `@"<filename>"` or `@'<filename>'` 
+in the place of table names in `FROM` clause(s).
+
+Example:
+
+`tql "SELECT filename, size FROM @./data.csv WHERE size > 1024 SORT BY size DESC;" --auto-filter` 
+
+#### Detailed Usage
+
+```
+{usage}
+```
+
+#### Data Filtering
+
+#### Available Data Filters
+
+{filter_table}
+
+#### Auto Filtering
+
+#### Column Remapping
+
+#### Table Remapping
+
+#### Character Replacements
+
+{replace_table}
+
+#### Save Database
+
+#### Load Database
+
+#### Output Formats
+
+#### Use Cases
+
+##### CSV -> filter/sort/aggregate/etc (SQL) -> CSV (or table)
+Without `-s`/`--save-db` or `-l`/`--load-db`, `tql` will load the CSV into an in-memory database, perform the SQL query, 
+and output the result in the chosen output format.  If the data set is too large for memory, use `-s`/`--save-db` to force
+`tql` to use a on-disk database and will only then be limited by available disk space and/or SQLite database size limitations.
+
+##### CSV -> filter/sort/aggregate/etc (SQL) -> database -> CSV (or table)
+Using `-s`/`--save-db` will force `tql` to retain an on-disk database of the loaded CSV data. 
+It will still produce results in the chosen output format. 
+The database can then be used in subsequent `-l`/`--load-db` workflows or manipulated using any desired SQLite database tool.
+
+##### CSV - database -> filter/sort/aggregate/etc (SQL) -> database -> CSV (or table)
+Using the `-l`/`--load-db` switch will cause `tql` to load an existing database and load the CSV data into a new table in the database. 
+It will still produce results in the chosen output format. The database can then be used in subsequent `-l`/`--load-db` 
+workflows or manipulated using any desired SQLite database tool.
+
+##### Database -> filter/sort/aggregate/etc (SQL) -> CSV (or table)
+Using the `-l`/`--load-db` switch will cause `tql` to load an existing database. If using regular tables for the 
+`FROM` clauses (ie, non-CSV files), the specified SQL will be run against the database and a CSV (or table) will
+produce results in the chosen output format. 
+
+### FAQs
+
+#### How do I change the order of the columns in the output?
+Use `SELECT` with the column names listed out; the order which they appear will produce output columns in the same order. 
+
+#### How do I filter, sort, etc on a numeric column?
+`tql` does not automatically convert CSV data into integers or floats. 
+There are two options:
+1. Coerce the data to either an integer or float using a filter (e.g., `int`) on the target column and then SQLite will be able to 
+operate on the column as a numeric value for sorting, comparisons, etc.
+2. Use the `-a`/`--auto-filter` switch that will try to convert all column data to numeric values. Data that cannot be converted
+to a numeric value will remain a string.
+
+### Acknowledgements
+
+Python (https://www.python.org/)
+
+SQLite (https://www.sqlite.org/index.html)
+
+Pendulum (https://pendulum.eustace.io/)
+
+pytablereader (https://github.com/thombashi/pytablereader)
+
+pytablewriter (https://github.com/thombashi/pytablewriter)

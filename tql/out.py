@@ -1,5 +1,6 @@
 import csv
 import sqlite3
+import sys
 
 from prettytable import PrettyTable
 from pytablewriter import TableWriterFactory
@@ -11,7 +12,7 @@ def do_output(sql, cur, output, output_format, delimiter):
     try:
         result = cur.execute(sql)
     except sqlite3.OperationalError as e:
-        raise DatabaseError("Database error: {e}")
+        raise DatabaseError(f"Database error: {e}")
 
     column_names = [x[0] for x in cur.description]
 
@@ -25,18 +26,21 @@ def do_output(sql, cur, output, output_format, delimiter):
                 writer.writerow(row)
 
 
-def print_simple_output(data, col_names, fmt, name):
+def print_simple_output(data, col_names, fmt, name, stream=sys.stdout):
     if fmt in {'table', 'ptable', 'pt'}:
         table = PrettyTable(col_names)
         table.align = 'l'
         for row in data:
             table.add_row(row)
-        print(table)
+        stream.write(str(table))
+        stream.write('\n')
 
     else:
         writer = TableWriterFactory.create_from_format_name(fmt)
         writer.table_name = name
         writer.header_list = col_names
         writer.value_matrix = data
-        writer.write_table()
+        stream.write(writer.dumps())
+        stream.write('\n')
+
 

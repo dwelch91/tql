@@ -53,7 +53,7 @@ def rewrite_sql(sql, table_remap=None):
             elif tablename in table_remap:
                 tablename = table_remap[tablename]
 
-            rewrite.append(tablename)
+            rewrite.append(f'"{tablename}"')
             tables[tablename] = path
 
         rewrite.append(s[i:])

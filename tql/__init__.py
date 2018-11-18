@@ -5,6 +5,7 @@ import sys
 from tql.exceptions import Error
 from tql.filter import apply_filters
 from tql.out import do_output
+from tql.sql import rewrite_sql
 from tql.utils import expand_path_and_exists
 
 DEBUG = False
@@ -15,8 +16,24 @@ def debug(s, title=None):
         sys.stderr.write(f"{title or ''}{s!r}\n")
 
 
+RESERVED_WORDS = [
+    'ABORT', 'ACTION', 'ADD', 'AFTER', 'ALL', 'ALTER', 'ANALYZE', 'AND', 'AS', 'ASC', 'ATTACH', 'AUTOINCREMENT',
+    'BEFORE', 'BEGIN', 'BETWEEN', 'BY', 'CASCADE', 'CASE', 'CAST', 'CHECK', 'COLLATE', 'COLUMN', 'COMMIT', 'CONFLICT', 'CONSTRAINT',
+    'CREATE', 'CROSS', 'CURRENT', 'CURRENT_DATE', 'CURRENT_TIME', 'CURRENT_TIMESTAMP',
+    'DATABASE', 'DEFAULT', 'DEFERRABLE', 'DEFERRED', 'DELETE', 'DESC', 'DETACH', 'DISTINCT', 'DO', 'DROP',
+    'EACH', 'ELSE', 'END', 'ESCAPE', 'EXCEPT', 'EXCLUSIVE', 'EXISTS', 'EXPLAIN',
+    'FAIL', 'FILTER', 'FOLLOWING', 'FOR', 'FOREIGN', 'FROM', 'FULL', 'GLOB', 'GROUP', 'HAVING',
+    'IF', 'IGNORE', 'IMMEDIATE', 'IN', 'INDEX', 'INDEXED', 'INITIALLY', 'INNER', 'INSERT', 'INSTEAD', 'INTERSECT', 'INTO', 'IS', 'ISNULL',
+    'JOIN', 'KEY', 'LEFT', 'LIKE', 'LIMIT', 'MATCH', 'NATURAL', 'NO', 'NOT', 'NOTHING', 'NOTNULL', 'NULL',
+    'OF', 'OFFSET', 'ON', 'OR', 'ORDER', 'OUTER', 'OVER', 'PARTITION', 'PLAN', 'PRAGMA', 'PRECEDING', 'PRIMARY', 'QUERY',
+    'RAISE', 'RANGE', 'RECURSIVE', 'REFERENCES', 'REGEXP', 'REINDEX', 'RELEASE', 'RENAME', 'REPLACE', 'RESTRICT', 'RIGHT', 'ROLLBACK', 'ROW', 'ROWS',
+    'SAVEPOINT', 'SELECT', 'SET', 'TABLE', 'TEMP', 'TEMPORARY', 'THEN', 'TO', 'TRANSACTION', 'TRIGGER',
+    'UNBOUNDED', 'UNION', 'UNIQUE', 'UPDATE', 'USING', 'VACUUM', 'VALUES', 'VIEW', 'VIRTUAL',
+    'WHEN', 'WHERE', 'WINDOW', 'WITH', 'WITHOUT',
+]
+
+
 def execute(sql: str,
-            tables=None,
             headers=None,
             filters=None,
             output='-',
@@ -24,6 +41,7 @@ def execute(sql: str,
             skip_lines=0,
             output_delimiter=',',
             column_remapping=None,
+            table_remapping=None,
             auto_filter=False,
             save_db=None,
             load_db=None,
@@ -33,15 +51,15 @@ def execute(sql: str,
             debug_=False
             ):
     """
-    :param filters:
+    :param filters:  {"col": [["filter", ...args...], ...]
     :param sql:
-    :param tables:
     :param headers:
     :param output:
     :param output_format:
     :param skip_lines:
     :param output_delimiter:
-    :param column_remapping:
+    :param column_remapping: {"col": "map_to_col", ...}
+    :param table_remapping:  {"table": "map_to_col", ...}
     :param auto_filter:
     :param save_db:
     :param load_db:
@@ -56,8 +74,14 @@ def execute(sql: str,
     DEBUG = debug_
     column_remapping = column_remapping or {}
     headers = headers or []
-    tables = tables or {}
+    if headers and isinstance(headers, str):
+        headers = [h.strip() for h in headers.split(',')]
     filters = filters or {}
+
+    # Re-write the SQL, replacing filenames with table names and apply table re-mapping(s)
+    sql, tables = rewrite_sql(sql, table_remapping)
+    debug(sql, 'sql=')
+    debug(tables, 'tables=')
 
     # Open the database
     if save_db:
@@ -85,7 +109,7 @@ def execute(sql: str,
             first, colnames = True, []
 
             for row in reader:
-                debug(row)
+                # debug(row)
                 row = [n.strip() for n in row if n]
 
                 if first:
@@ -101,11 +125,10 @@ def execute(sql: str,
                         debug(filters, 'filters (auto)=')
 
                     debug(colnames, 'colnames=')
-                    colnames_str = ','.join(colnames)
+                    colnames_str = ','.join(f'"{c}"' for c in colnames)
 
-                    # TODO: For -l/--load-db, handle case where db has an existing table with same name as one of the CSV input table(s)
-                    s = f"CREATE TABLE {tablename} ({colnames_str});"
-                    debug(s, 'table create: ')
+                    s = f"""CREATE TABLE "{tablename}" ({colnames_str});"""
+                    debug(s)
                     try:
                         cur.execute(s)
                     except sqlite3.OperationalError as e:
@@ -116,8 +139,9 @@ def execute(sql: str,
                     continue
 
                 filtered_row = apply_filters(filters, colnames, row)
-                debug(row, 'row=')
-                s = f"INSERT INTO {tablename} ({colnames_str}) VALUES ({placeholders});"
+
+                s = f"""INSERT INTO "{tablename}" ({colnames_str}) VALUES ({placeholders});"""
+                # debug(f"{s}, {filtered_row}")
                 cur.execute(s, filtered_row)
 
     con.commit()

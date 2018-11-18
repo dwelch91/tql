@@ -10,7 +10,7 @@ class TestRewriteSql(TestCase):
         sql = """SELECT * FROM @"./data/remap.csv" WHERE frm = 'y';"""
         table_remap = {}
         sql, map = rewrite_sql([sql], table_remap)
-        self.assertEqual("""SELECT * FROM remap WHERE frm = 'y';""", sql)
+        self.assertEqual("""SELECT * FROM "remap" WHERE frm = 'y';""", sql)
         self.assertEqual({'remap': expand_path_and_exists('./data/remap.csv')[0]}, map)
 
 
@@ -18,7 +18,7 @@ class TestRewriteSql(TestCase):
         sql = """SELECT * FROM @'./data/remap.csv' WHERE frm = 'y';"""
         table_remap = {}
         sql, map = rewrite_sql([sql], table_remap)
-        self.assertEqual("""SELECT * FROM remap WHERE frm = 'y';""", sql)
+        self.assertEqual("""SELECT * FROM "remap" WHERE frm = 'y';""", sql)
         self.assertEqual({'remap': expand_path_and_exists('./data/remap.csv')[0]}, map)
 
 
@@ -26,7 +26,7 @@ class TestRewriteSql(TestCase):
         sql = """SELECT * FROM @./data/remap.csv WHERE frm = 'y';"""
         table_remap = {}
         sql, map = rewrite_sql([sql], table_remap)
-        self.assertEqual("""SELECT * FROM remap WHERE frm = 'y';""", sql)
+        self.assertEqual("""SELECT * FROM "remap" WHERE frm = 'y';""", sql)
         self.assertEqual({'remap': expand_path_and_exists('./data/remap.csv')[0]}, map)
 
 
@@ -34,7 +34,7 @@ class TestRewriteSql(TestCase):
         sql = """SELECT * FROM - WHERE frm = 'y';"""
         table_remap = {}
         sql, map = rewrite_sql([sql], table_remap)
-        self.assertEqual("""SELECT * FROM stdin WHERE frm = 'y';""", sql)
+        self.assertEqual("""SELECT * FROM "stdin" WHERE frm = 'y';""", sql)
         self.assertEqual({'stdin': '-'}, map)
 
 
@@ -42,7 +42,7 @@ class TestRewriteSql(TestCase):
         sql = """SELECT * FROM @- WHERE frm = 'y';"""
         table_remap = {}
         sql, map = rewrite_sql([sql], table_remap)
-        self.assertEqual("""SELECT * FROM stdin WHERE frm = 'y';""", sql)
+        self.assertEqual("""SELECT * FROM "stdin" WHERE frm = 'y';""", sql)
         self.assertEqual({'stdin': '-'}, map)
 
 
@@ -51,7 +51,7 @@ class TestRewriteSql(TestCase):
         sql = """SELECT * FROM '@-' WHERE frm = 'y';"""   # TODO: Doesn't work... maybe don't support this?
         table_remap = {}
         sql, map = rewrite_sql([sql], table_remap)
-        self.assertEqual("""SELECT * FROM stdin WHERE frm = 'y';""", sql)
+        self.assertEqual("""SELECT * FROM "stdin" WHERE frm = 'y';""", sql)
         self.assertEqual({'stdin': '-'}, map)
 
 
@@ -59,7 +59,7 @@ class TestRewriteSql(TestCase):
         sql = """SELECT * FROM @./data/remap.csv WHERE frm = 'y' SELECT * FROM @./data/test1.csv WHERE foo = 'bar';"""
         table_remap = {}
         sql, map = rewrite_sql([sql], table_remap)
-        self.assertEqual("""SELECT * FROM remap WHERE frm = 'y' SELECT * FROM test1 WHERE foo = 'bar';""", sql)
+        self.assertEqual("""SELECT * FROM "remap" WHERE frm = 'y' SELECT * FROM "test1" WHERE foo = 'bar';""", sql)
         self.assertDictEqual({'remap': expand_path_and_exists('./data/remap.csv')[0], 'test1': expand_path_and_exists('./data/test1.csv')[0]}, map)
 
 
