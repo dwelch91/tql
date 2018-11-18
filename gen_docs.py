@@ -10,7 +10,7 @@ with open('./README.md.tmpl', 'r') as f:
 buf = StringIO()
 print_filter_list_table(fmt='md', stream=buf)
 filter_table = buf.getvalue()
-filter_table = filter_table.replace('<', r'\<').replace('>', r'\>')
+#filter_table = filter_table.replace('<', r'\<').replace('>', r'\>')
 buf.close()
 
 buf = StringIO()
