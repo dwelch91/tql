@@ -37,5 +37,8 @@ def apply_char_replacements(s):
 def print_replacements_table(fmt='table', stream=sys.stdout):
     table_data = []
     for seq, _, desc in REPLACEMENTS:
-        table_data.append([seq, desc])
+        if fmt in {'md', 'markdown'}:
+            table_data.append([f"`{seq}`", desc])
+        else:
+            table_data.append([seq, desc])
     print_simple_output(table_data, ('Sequence', 'Description'), fmt, "", stream=stream)

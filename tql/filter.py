@@ -120,9 +120,13 @@ def print_filter_list_table(fmt='table', stream=sys.stdout):
     :return:
     """
     table_data = []
-    for func_name in sorted(FILTERS.keys()):
-        values = FILTERS[func_name]
-        table_data.append([func_name] + list(values[1:]))
+    sorted_keys = sorted(FILTERS.keys())
+    for func_name in sorted_keys:
+        _, num_params, syntax, from_type, to_type, desc = FILTERS[func_name]
+        if fmt in {'md', 'markdown'}:
+            table_data.append([f"`{func_name}`", num_params, f"`{syntax}`", f"`{from_type}`", f"`{to_type}`", desc.replace('<', '`<').replace('>', '>`')])
+        else:
+            table_data.append([func_name, num_params, syntax, from_type, to_type, desc])
 
     print_simple_output(table_data, ('Filter', 'Num. Params', 'Syntax**', 'In type*', 'Out type', 'Description'), fmt,
                         "", stream=stream)
