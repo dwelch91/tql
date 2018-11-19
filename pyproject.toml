@@ -28,11 +28,13 @@ classifiers=[
 
 
 [tool.poetry.dependencies]
+boto3 = "^1.9.47"
 pendulum = "^2.0"
 prettytable = "=0.7.2"
-pytablereader = "^0.22.0"
+#pytablereader = "^0.22.0"
 pytablewriter = "^0.36.0"
 python = "^3.5"
+tabulator = "^1.19.0"
 
 [tool.poetry.dev-dependencies]
 

@@ -2,12 +2,12 @@ import sys
 import argparse
 import csv
 
-from pytablewriter import TableWriterFactory
+# from pytablewriter import TableWriterFactory
 
 from tql import execute
 from tql.exceptions import Error
 from tql.filter import print_filter_list_table, preprocess_filters
-from tql.replace import print_replacements_table
+from tql.replace import print_replacements_table, apply_char_replacements
 from tql.sql import rewrite_sql, process_table_remapping, process_column_remapping
 from tql.utils import error
 
@@ -25,11 +25,17 @@ def build_args_parser():
                                                "Use filenames surrounded by single or double quotes to specify CSV sources instead of existing tables in the FROM clause(s). "
                                                "You can use [:...:] replacements for special characters (see --help-filters for more information.")
     # Input
+    # input_formats = TableWriterFactory.get_format_name_list()
+    input_formats = ['csv', 'json']
+    parser.add_argument('--input-format', '--in-format', '--in-fmt', '-f', default='csv', choices=input_formats, # + ['table', 'ptable', 'pt'],
+                        help=f"Input format. Valid value are {', '.join(input_formats)}. Default is `csv`.")
     parser.add_argument('--skip-lines', '--skip', '-k', type=int, default=0, help="Skip `SKIP_LINES` lines at the beginning of the file. Default is 0.")
-    parser.add_argument('--input-dialect', '-t', choices=csv.list_dialects(), default='unix',
-                        help=f"Specify the CSV dialect. Valid values are {', '.join(csv.list_dialects())}. Default is `unix`.")
+    # parser.add_argument('--input-dialect', '-t', choices=csv.list_dialects(), default='unix',
+    #                     help=f"Specify the CSV dialect. Valid values are {', '.join(csv.list_dialects())}. Default is `unix`.")
     parser.add_argument('--input-delimiter', '-d', default=',', help="Specify the CSV delimiter to use. Default is a comma (,).")
-    parser.add_argument('--input-quotechar', '--quote-char', '-q', default='"', help='Specify the CSV quote charactor. Default is double quote (").')
+    # parser.add_argument('--input-quotechar', '--quote-char', '-q', default='"', help='Specify the CSV quote charactor. Default is double quote (").')
+    parser.add_argument('--input-encoding', default='utf8', help="Specify the input file encoding. Defaults to 'utf8'.")
+
     parser.add_argument('--headers', '-r',
                         help="Don't use the first non-skipped line for header/column names, use these header/column names instead. "
                              "Format is a comma separated list of column names. "
@@ -65,10 +71,18 @@ def build_args_parser():
 
     # Output
     parser.add_argument('--output', '-o', default='-', help="Output file. Default is stdout (-).")
-    parser.add_argument('--output-format', '--out-format', '--out-fmt', '-f', default='table', choices=TableWriterFactory.get_format_name_list() + ['table', 'ptable', 'pt'],
-                        help="Output format. Valid value are 'table' and 'csv'. Default is table.")
-    parser.add_argument('--output-delimiter', default=',', help="Specify the CSV delimiter to use for output. Default is a comma (,).")
-    parser.add_argument('--output-quotechar', '--output-quote-char', default='"', help='Specify the CSV quote character for output. Default is double quote (").')
+    output_formats = ['csv', 'table', 'md', 'markdown']
+    # output_formats = TableWriterFactory.get_format_name_list() + ['table', 'ptable', 'pt']
+    parser.add_argument('--output-format', '--out-format', '--out-fmt', '-F', default='table', choices=output_formats,
+                        help=f"Output format. Valid value are {', '.join(output_formats)}. Default is table.")
+    parser.add_argument('--output-delimiter', '-D', default=',', help="Specify the CSV delimiter to use for output. Default is a comma (,).")
+    parser.add_argument('--output-quotechar', '-Q', '--output-quote-char', default='"', help='Specify the CSV quote character for output. Default is double quote (").')
+
+    # S3 I/O
+    parser.add_argument('--aws-profile')
+
+    # GS I/O
+    parser.add_argument('--gcp-profile')
 
     # Debug
     parser.add_argument('--debug', '-g', action='store_true', help="Turn on debug output.")
@@ -113,6 +127,9 @@ def main(args=None):
     column_remapping = process_column_remapping(args.remap_column)
     debug(column_remapping, 'column_remapping=')
 
+    # Process delimiters
+    input_delimiter = apply_char_replacements(args.input_delimiter)
+
     execute(args.sql,
             headers=args.headers,
             filters=filters,
@@ -125,9 +142,9 @@ def main(args=None):
             auto_filter=args.auto_filter,
             save_db=args.save_db,
             load_db=args.load_db,
-            dialect=args.input_dialect,
-            input_delimiter=args.input_delimiter,
-            input_quotechar=args.input_quotechar,
+            input_format=args.input_format,
+            input_delimiter=input_delimiter,
+            input_encoding=args.input_encoding,
             debug_=args.debug)
     return 0
 
@@ -136,5 +153,5 @@ if __name__ == '__main__':
     try:
         sys.exit(main())
     except Error as e:
-        error(e)
+        error(e.msg)
         sys.exit(1)  # TODO: correct result code

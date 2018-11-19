@@ -84,3 +84,20 @@ class TestFilters(unittest.TestCase):
 
         with self.assertRaises(FilterError):
             new_row = apply_filters(filters, columns, row)
+
+    def test_data_csv(self):
+        main(args=["""SELECT * FROM @'./data/filters.csv';""",
+                   # '-g',
+                   '-e', 'abs|abs',
+                   '-e', 'add|add:1',
+                   '-e', 'backticks|backticks',
+                   '-e', 'capitalize|capitalize',
+                   '-e', 'ceil|ceil',
+                   '-e', 'center|center:10',
+                   '-e', 'datetime|datetime|iso8601',
+                   '-e', 'datetime_tz|datetime_tz: America/New_York|iso8601',
+                   '-e', 'dehumanize|dehumanize',
+                   '-f', 'csv',
+                   '-F', 'table',
+                   # '-s', 'output.db'
+                   ])

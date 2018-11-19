@@ -19,6 +19,8 @@ Inspired by the`q` tool (https://harelba.github.io/q/)...
 * Locale based filters
 * Encodings support
 * CSV column merging and splitting
+* Modification queries (TBD)
+* Callable API
 
 ### Installation
 
@@ -42,20 +44,15 @@ Example:
 #### Detailed Usage
 
 ```
-usage: tql [-h] [--skip-lines SKIP_LINES]
-           [--input-dialect {excel, excel-tab, unix}]
+usage: tql [-h] [--input-format {csv, json}] [--skip-lines SKIP_LINES]
            [--input-delimiter INPUT_DELIMITER]
-           [--input-quotechar INPUT_QUOTECHAR] [--headers HEADERS]
+           [--input-encoding INPUT_ENCODING] [--headers HEADERS]
            [--filter FILTER] [--auto-filter] [--remap-column REMAP_COLUMN]
            [--remap-table REMAP_TABLE] [--save-db SAVE_DB | --load-db LOAD_DB]
-           [--output OUTPUT]
-           [--output-format {csv, elasticsearch, excel, htm, html, javascript,
-           js, json, json_lines, jsonl, latex_matrix, latex_table, ldjson, ltsv, markdown,
-           md, mediawiki, ndjson, null, numpy, pandas, py, python, rst, rst_csv,
-           rst_csv_table, rst_grid, rst_grid_table, rst_simple, rst_simple_table,
-           space_aligned, sqlite, toml, tsv, table, ptable, pt}]
+           [--output OUTPUT] [--output-format {csv, table, md, markdown}]
            [--output-delimiter OUTPUT_DELIMITER]
-           [--output-quotechar OUTPUT_QUOTECHAR] [--debug] [--filters-list]
+           [--output-quotechar OUTPUT_QUOTECHAR] [--aws-profile AWS_PROFILE]
+           [--gcp-profile GCP_PROFILE] [--debug] [--filters-list]
            [--replacements-list]
            [sql [sql ...]]
 positional arguments:
@@ -66,19 +63,18 @@ positional arguments:
                         --help-filters for more information.
 optional arguments:
   -h,  --help            show this help message and exit
+  --input-format {csv, json},  --in-format {csv, json},  --in-fmt {csv, json},
+  -f {csv, json}
+                        Input format. Valid value are csv,  json. Default is
+                        `csv`.
   --skip-lines SKIP_LINES,  --skip SKIP_LINES,  -k SKIP_LINES
                         Skip `SKIP_LINES` lines at the beginning of the file.
                         Default is 0.
-  --input-dialect {excel, excel-tab, unix},  -t {excel, excel-tab, unix}
-                        Specify the CSV dialect. Valid values are excel, 
-                        excel-tab,  unix. Default is `unix`.
   --input-delimiter INPUT_DELIMITER,  -d INPUT_DELIMITER
                         Specify the CSV delimiter to use. Default is a comma
                         (, ).
-  --input-quotechar INPUT_QUOTECHAR,  --quote-char INPUT_QUOTECHAR,  -q
-                        INPUT_QUOTECHAR
-                        Specify the CSV quote charactor. Default is double
-                        quote (").
+  --input-encoding INPUT_ENCODING
+                        Specify the input file encoding. Defaults to 'utf8'.
   --headers HEADERS,  -r HEADERS
                         Don't use the first non-skipped line for header/column
                         names,  use these header/column names instead. Format
@@ -117,32 +113,19 @@ optional arguments:
                         one.
   --output OUTPUT,  -o OUTPUT
                         Output file. Default is stdout (-).
-  --output-format {csv, elasticsearch, excel, htm, html, javascript, js, json,
-                        json_lines, jsonl, latex_matrix, latex_table, ldjson, ltsv, markdown, md,
-                        mediawiki, ndjson, null, numpy, pandas, py, python, rst, rst_csv, rst_csv_table,
-                        rst_grid, rst_grid_table, rst_simple, rst_simple_table, space_aligned, sqlite,
-                        toml, tsv, table, ptable, pt},  --out-format {csv, elasticsearch, excel, htm,
-                        html, javascript, js, json, json_lines, jsonl, latex_matrix, latex_table,
-                        ldjson, ltsv, markdown, md, mediawiki, ndjson, null, numpy, pandas, py, python,
-                        rst, rst_csv, rst_csv_table, rst_grid, rst_grid_table, rst_simple,
-                        rst_simple_table, space_aligned, sqlite, toml, tsv, table, ptable, pt},  --out-
-                        fmt {csv, elasticsearch, excel, htm, html, javascript, js, json, json_lines,
-                        jsonl, latex_matrix, latex_table, ldjson, ltsv, markdown, md, mediawiki, ndjson,
-                        null, numpy, pandas, py, python, rst, rst_csv, rst_csv_table, rst_grid,
-                        rst_grid_table, rst_simple, rst_simple_table, space_aligned, sqlite, toml, tsv,
-                        table, ptable, pt},  -f {csv, elasticsearch, excel, htm, html, javascript, js,
-                        json, json_lines, jsonl, latex_matrix, latex_table, ldjson, ltsv, markdown, md,
-                        mediawiki, ndjson, null, numpy, pandas, py, python, rst, rst_csv, rst_csv_table,
-                        rst_grid, rst_grid_table, rst_simple, rst_simple_table, space_aligned, sqlite,
-                        toml, tsv, table, ptable, pt}
-                        Output format. Valid value are 'table' and 'csv'.
-                        Default is table.
-  --output-delimiter OUTPUT_DELIMITER
+  --output-format {csv, table, md, markdown},  --out-format {csv, table, md,
+                        markdown},  --out-fmt {csv, table, md, markdown},  -F {csv, table, md, markdown}
+                        Output format. Valid value are csv,  table,  md, 
+                        markdown. Default is table.
+  --output-delimiter OUTPUT_DELIMITER,  -D OUTPUT_DELIMITER
                         Specify the CSV delimiter to use for output. Default
                         is a comma (, ).
-  --output-quotechar OUTPUT_QUOTECHAR,  --output-quote-char OUTPUT_QUOTECHAR
+  --output-quotechar OUTPUT_QUOTECHAR,  -Q OUTPUT_QUOTECHAR,  --output-quote-
+                        char OUTPUT_QUOTECHAR
                         Specify the CSV quote character for output. Default is
                         double quote (").
+  --aws-profile AWS_PROFILE
+  --gcp-profile GCP_PROFILE
   --debug,  -g           Turn on debug output.
   --filters-list,  --filter-list,  --help-filters
   --replacements-list,  --replacement-list,  --help-replacements
@@ -151,6 +134,7 @@ optional arguments:
 #### Data Filtering
 
 #### Available Data Filters
+
 
 |   Filter    |Num. Params|          Syntax**          | In type* | Out type |                        Description                        |
 |-------------|----------:|----------------------------|----------|----------|-----------------------------------------------------------|
@@ -214,6 +198,7 @@ optional arguments:
 #### Table Remapping
 
 #### Character Replacements
+
 
 |   Sequence    |    Description     |
 |---------------|--------------------|

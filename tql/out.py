@@ -32,6 +32,7 @@ def print_simple_output(data, col_names, fmt, name, stream=sys.stdout):
         table.align = 'l'
         for row in data:
             table.add_row(row)
+        stream.write('\n')
         stream.write(str(table))
         stream.write('\n')
 
@@ -40,6 +41,7 @@ def print_simple_output(data, col_names, fmt, name, stream=sys.stdout):
         writer.table_name = name
         writer.header_list = col_names
         writer.value_matrix = data
+        stream.write('\n')
         stream.write(writer.dumps())
         stream.write('\n')
 

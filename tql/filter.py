@@ -1,5 +1,6 @@
 import sys
 from math import ceil, floor, trunc
+from typing import Dict, List
 
 import pendulum as pendulum
 
@@ -109,6 +110,9 @@ def preprocess_filters(filter_args):
                 if len(filter_parts) > 1:
                     args = filter_parts.pop(-1)
                     filter_parts.extend(args.split(","))
+                filter_name = filter_parts[0]
+                if filter_name not in FILTERS:
+                    raise FilterError(f"Invalid filter name: {filter_name}")
                 filter_parts = [apply_char_replacements(p) for p in filter_parts]
                 filters[col].append(filter_parts)
     return filters
@@ -137,7 +141,7 @@ def print_filter_list_table(fmt='table', stream=sys.stdout):
         "  The type of the data after the last filter has run will be the type that is added to the database.\n", file=stream)
 
 
-def apply_filters(filters, colnames, row):
+def apply_filters(filters: Dict, colnames: List, row: List) -> List:
     """
     Process data based on filter chains
     :param filters:
@@ -163,3 +167,15 @@ def apply_filters(filters, colnames, row):
             new_row.append(data)
         return new_row
     return row
+
+
+def check_filters_against_columns(filters: Dict, colnames: List):
+    """
+    Raise a FilterError if a filter does not refer to a valid column.
+    :param filters:
+    :param colnames:
+    :return:
+    """
+    for col in filters.keys():
+        if col not in colnames:
+            raise FilterError(f"Unknown column name in filter: {col}")
